@@ -28,13 +28,8 @@ import java.util.Objects
 
 class RecyclerViewAdapter(context: Context?) :
     RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
-    private val context: Context = TODO()
+    val context: Context?=context;
 
-    init {
-        if (context != null) {
-            this.context = context
-        }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
@@ -149,7 +144,7 @@ class RecyclerViewAdapter(context: Context?) :
 
 //            Toast.makeText(context, "The position is " + String.valueOf(position) +
 //                    " Name: " + name + ", Phone:" + phone + ", c_ID:"+CID, Toast.LENGTH_SHORT).show();
-            val intent = Intent(context.applicationContext, ContactMassegeDetailsView::class.java)
+            val intent = Intent(context?.applicationContext, ContactMassegeDetailsView::class.java)
             intent.putExtra("CID", CID)
             intent.putExtra("ContactMobileNumber", phone)
             intent.putExtra("ContactName", ContactName)
@@ -159,7 +154,7 @@ class RecyclerViewAdapter(context: Context?) :
                 "log-opened_contactChatView",
                 "onClick: opened_contactChatView is : " + MainActivity.Contact_page_opened_id
             )
-            context.startActivity(intent)
+            context?.startActivity(intent)
             setNewMassegeArriveValueToEmpty(position)
         }
 

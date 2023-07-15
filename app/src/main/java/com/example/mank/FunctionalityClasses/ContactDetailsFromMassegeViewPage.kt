@@ -49,12 +49,7 @@ class ContactDetailsFromMassegeViewPage() : Activity() {
             "updateSingleContactProfileImageToUserProfilePage",
             onUpdateSingleContactProfileImageToUserProfilePage
         )
-        val db_work = Thread(Runnable {
-            MainActivity.db = databaseBuilder(
-                applicationContext,
-                MainDatabaseClass::class.java, "MassengerDatabase"
-            ).fallbackToDestructiveMigration().allowMainThreadQueries().build()
-        })
+
         contact_display_name = findViewById<View>(R.id.contact_display_name) as TextView
         contact_about_details = findViewById<View>(R.id.contact_about_details) as TextView
         contact_mobile_number = findViewById<View>(R.id.contact_phone_number) as TextView

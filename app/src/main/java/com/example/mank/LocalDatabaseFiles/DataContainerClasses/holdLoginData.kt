@@ -1,13 +1,29 @@
 package com.example.mank.LocalDatabaseFiles.DataContainerClasses
 
+import androidx.room.Room
+import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
+import com.example.mank.LocalDatabaseFiles.MainDatabaseClass
 import com.example.mank.LocalDatabaseFiles.entities.loginDetailsEntity
-import com.example.mank.MainActivity
+import com.example.mank.MainActivity.Companion.MainActivityStaticContext
+import com.example.mank.MainActivityClassForContext
 
 class holdLoginData {
-    var data: loginDetailsEntity?
+    var data: loginDetailsEntity? = null
+    var db: MainDatabaseClass?
 
     init {
-        val massegeDao = MainActivity.db!!.massegeDao()
-        data = massegeDao.loginDetailsFromDatabase
+        db = MainActivityStaticContext?.let {
+            Room.databaseBuilder(
+                it,
+                MainDatabaseClass::class.java,
+                "MassengerDatabase"
+            ).fallbackToDestructiveMigration().allowMainThreadQueries().build()
+
+        }
+        if (db != null) {
+            val massegeDao = db!!.massegeDao()
+
+            data = massegeDao.loginDetailsFromDatabase
+        }
     }
 }

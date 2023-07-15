@@ -26,6 +26,10 @@ class AllSettingsActivity : Activity() {
         username = findViewById<View>(R.id.ASUsername) as TextView
         aboutInfo = findViewById<View>(R.id.ASAboutInfo) as TextView
         userProfileImage = findViewById<View>(R.id.ASUserProfileImage) as ImageView
+    }
+
+    override fun onResume() {
+        super.onResume()
         setUserDetails()
     }
 
@@ -40,7 +44,6 @@ class AllSettingsActivity : Activity() {
                         aboutInfo!!.text = loginDetailsEntity?.about
                     }
                 }
-
 
                 //setup image
                 val imagePath =

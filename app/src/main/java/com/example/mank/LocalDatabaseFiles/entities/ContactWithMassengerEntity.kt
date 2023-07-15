@@ -34,7 +34,6 @@ class ContactWithMassengerEntity {
 
     @ColumnInfo(name = "PriorityRank")
     var priorityRank: Long = 0
-        private set
 
     @ColumnInfo(name = "LocallySaved")
     var locallySaved = 1

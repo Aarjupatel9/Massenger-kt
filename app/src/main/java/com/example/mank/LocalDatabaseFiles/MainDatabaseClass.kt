@@ -14,7 +14,7 @@ import java.util.concurrent.Executors
 
 @Database(
     entities = [MassegeEntity::class, loginDetailsEntity::class, ContactWithMassengerEntity::class, SetupFirstTimeEntity::class, AllContactOfUserEntity::class],
-    version = 2
+    version = 2, exportSchema = false
 )
 abstract class MainDatabaseClass : RoomDatabase() {
     abstract fun massegeDao(): MassegeDao
@@ -23,7 +23,6 @@ abstract class MainDatabaseClass : RoomDatabase() {
         @Volatile
         private var INSTANCE: MainDatabaseClass? = null
         private const val NUMBER_OF_THREADS = 4
-        val databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS)
         fun getDatabase(context: Context): MainDatabaseClass? {
             if (INSTANCE == null) {
                 synchronized(MainDatabaseClass::class.java) {

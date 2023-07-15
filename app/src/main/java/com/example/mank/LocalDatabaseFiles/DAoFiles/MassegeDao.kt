@@ -82,8 +82,12 @@ interface MassegeDao {
     val userMobileNumber: Long
 
     //contact related query
+
     @Query("SELECT * FROM contactDetails where AppUserId=:appUserId order by PriorityRank DESC")
     fun getContactDetailsFromDatabase(appUserId: String?): List<ContactWithMassengerEntity?>?
+
+    @Query("SELECT * FROM contactDetails where CID=:CID and AppUserId=:appUserId limit 1")
+    fun checkCIDInConnectedSavedContact(CID:String? ,appUserId: String?): ContactWithMassengerEntity
 
     @Query("SELECT * FROM contactDetails where CID=:CID and AppUserId=:appUserId")
     fun getContactWith_CID(CID: String?, appUserId: String?): ContactWithMassengerEntity?

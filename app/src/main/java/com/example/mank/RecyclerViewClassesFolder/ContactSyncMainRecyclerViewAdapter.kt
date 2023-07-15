@@ -21,21 +21,15 @@ import com.example.mank.RecyclerViewClassesFolder.SearchModel.CourseModel
 
 class ContactSyncMainRecyclerViewAdapter(
     context: Context,
-    contactList: List<AllContactOfUserEntity?>
+    contactArrayList: ArrayList<AllContactOfUserEntity?>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var context: Context
-    private var courseModelArrayList: ArrayList<CourseModel>? = null
-    fun filterList(filterList: ArrayList<CourseModel>?) {
-        // below line is to add our filtered
-        // list in our course array list.
-        courseModelArrayList = filterList
-        // below line is to notify our adapter
-        // as change in recycler view data.
-        notifyDataSetChanged()
-    }
+
+    private var contactArrayList: ArrayList<AllContactOfUserEntity?>? = null
 
     init {
         this.context = context
+        this.contactArrayList = contactArrayList;
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -58,7 +52,7 @@ class ContactSyncMainRecyclerViewAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val contact = MainActivity.contactList?.get(position)
+        val contact = contactArrayList?.get(position)
         //        Log.d("log-ContactSyncMainRecyclerViewAdapter", "contact.getCID()  : " + contact.getCID() + " DisplayName: "+contact.getDisplay_name());
         if (contact?.CID == "-5") {
             return 3
@@ -75,7 +69,7 @@ class ContactSyncMainRecyclerViewAdapter(
         when (holder.itemViewType) {
             0 -> {
                 val viewHolder = holder as ViewHolder
-                val contact = MainActivity.contactList?.get(position)
+                val contact = contactArrayList?.get(position)
                 viewHolder.Display_Name.text = contact?.DisplayName
                 viewHolder.LastMassegeOfContact.text = contact?.MobileNumber.toString()
                 viewHolder.DPImageButton.setImageDrawable(context.resources.getDrawable(R.drawable.b_user_image))
@@ -83,7 +77,7 @@ class ContactSyncMainRecyclerViewAdapter(
 
             3 -> {
                 val viewHolder3 = holder as ViewHolder
-                val contact1 = MainActivity.contactList?.get(position)
+                val contact1 = contactArrayList?.get(position)
                 viewHolder3.Display_Name.text = contact1?.DisplayName
                 viewHolder3.LastMassegeOfContact.text = contact1?.MobileNumber.toString()
                 viewHolder3.DPImageButton.setImageDrawable(context.resources.getDrawable(R.drawable.null_user_image))
@@ -109,7 +103,7 @@ class ContactSyncMainRecyclerViewAdapter(
 
     override fun getItemCount(): Int {
 //        Log.d("log-getItemCount", "getItemCount: size is : " + contactList.size());
-        return MainActivity.contactList?.size!!
+        return contactArrayList?.size!!
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
@@ -130,7 +124,7 @@ class ContactSyncMainRecyclerViewAdapter(
         override fun onClick(view: View) {
             Log.d("log-clicked", "you clicked Contact recyclerView_main")
             val position = this.adapterPosition
-            val contact = MainActivity.contactList?.get(position)
+            val contact = contactArrayList?.get(position)
             val CID = contact?.CID
             if (CID == "-1") {
                 Toast.makeText(context, "Invite your friend on Massenger", Toast.LENGTH_LONG).show()
@@ -141,9 +135,6 @@ class ContactSyncMainRecyclerViewAdapter(
                 }
                 val ContactName = contact?.DisplayName
 
-//                Toast.makeText(context, "The position is " + (position) +
-//                        " Name: " + ContactName + ", Phone:" + phone + ", CID:" + CID, Toast.LENGTH_SHORT).show();
-
                 // save contact to contactDetails table
                 val tx = Thread {
                     val y = AllContactOfUserInDeviceView.massegeDao!!.getContactWith_CID(
@@ -152,12 +143,15 @@ class ContactSyncMainRecyclerViewAdapter(
                     )
                     if (y == null) {
                         //if first time then store it to contactDetails table
-                        val x = AllContactOfUserInDeviceView.massegeDao!!.getHighestPriorityRank(
+                        val x = AllContactOfUserInDeviceView.massegeDao?.getHighestPriorityRank(
                             MainActivity.user_login_id
                         )
-                        val new_entity = ContactWithMassengerEntity(phone, ContactName, CID, x + 1)
-                        MainActivity.contactListAdapter!!.AddContact(new_entity) // adapter add into database as well as reflect into UI
-                        //                            massegeDao.SaveContactDetailsInDatabase(new_entity);
+                        val newEntity = ContactWithMassengerEntity(
+                            phone, ContactName, CID,
+                            x?.plus(1) ?: 0
+                        )
+                        MainActivity.contactListAdapter?.addContact(newEntity) // adapter add into database as well as reflect into UI
+
                     }
                 }
                 tx.start()
