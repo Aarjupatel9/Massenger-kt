@@ -20,7 +20,6 @@ import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
 import com.example.mank.LocalDatabaseFiles.DataContainerClasses.contactDetailsHolderForSync
 import com.example.mank.LocalDatabaseFiles.MainDatabaseClass
 import com.example.mank.LocalDatabaseFiles.entities.AllContactOfUserEntity
-import com.example.mank.LocalDatabaseFiles.entities.ContactWithMassengerEntity
 import com.example.mank.RecyclerViewClassesFolder.ContactSyncMainRecyclerViewAdapter
 import com.example.mank.ThreadPackages.GetUserContactDetailsFromPhone
 import com.example.mank.ThreadPackages.IContactSync
@@ -28,6 +27,7 @@ import com.example.mank.ThreadPackages.SyncContactDetailsThread
 import com.example.mank.cipher.MyCipher
 import com.example.mank.configuration.permission_code.CONTACTS_PERMISSION_CODE
 import com.example.mank.configuration.permission_code.STORAGE_PERMISSION_CODE
+import com.example.mank.R
 import java.util.Locale
 import java.util.TreeSet
 

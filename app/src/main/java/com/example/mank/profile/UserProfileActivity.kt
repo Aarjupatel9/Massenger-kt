@@ -24,12 +24,10 @@ import androidx.core.content.FileProvider
 import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
 import com.example.mank.LocalDatabaseFiles.DataContainerClasses.holdLoginData
 import com.example.mank.MainActivity
-import com.example.mank.R
 import com.example.mank.configuration.GlobalVariables
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.example.mank.R
 import io.socket.emitter.Emitter
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream

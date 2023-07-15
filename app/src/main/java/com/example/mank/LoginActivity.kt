@@ -30,6 +30,7 @@ import com.example.mank.cipher.MyCipher
 import com.example.mank.configuration.GlobalVariables
 import com.example.mank.configuration.permissionMain
 import com.example.mank.configuration.permission_code
+import com.example.mank.R
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File

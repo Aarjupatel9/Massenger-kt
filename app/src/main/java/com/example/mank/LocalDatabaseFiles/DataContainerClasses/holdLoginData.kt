@@ -1,11 +1,9 @@
 package com.example.mank.LocalDatabaseFiles.DataContainerClasses
 
 import androidx.room.Room
-import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
 import com.example.mank.LocalDatabaseFiles.MainDatabaseClass
 import com.example.mank.LocalDatabaseFiles.entities.loginDetailsEntity
 import com.example.mank.MainActivity.Companion.MainActivityStaticContext
-import com.example.mank.MainActivityClassForContext
 
 class holdLoginData {
     var data: loginDetailsEntity? = null

@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.example.mank.R
-import com.example.mank.profile.BgImageSetForContactPage
 import java.io.IOException
 
 class SettingsOptionPage : Activity() {

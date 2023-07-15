@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mank.R
 
+
 class CallsRecyclerViewAdapter(var context: Context?, var ContactStatusList: List<Long>) :
     RecyclerView.Adapter<CallsRecyclerViewAdapter.ViewHolder?>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

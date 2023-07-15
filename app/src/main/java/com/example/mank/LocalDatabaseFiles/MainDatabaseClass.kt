@@ -10,7 +10,6 @@ import com.example.mank.LocalDatabaseFiles.entities.ContactWithMassengerEntity
 import com.example.mank.LocalDatabaseFiles.entities.MassegeEntity
 import com.example.mank.LocalDatabaseFiles.entities.SetupFirstTimeEntity
 import com.example.mank.LocalDatabaseFiles.entities.loginDetailsEntity
-import java.util.concurrent.Executors
 
 @Database(
     entities = [MassegeEntity::class, loginDetailsEntity::class, ContactWithMassengerEntity::class, SetupFirstTimeEntity::class, AllContactOfUserEntity::class],

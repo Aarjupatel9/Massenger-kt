@@ -18,11 +18,11 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mank.ContactMassegeDetailsView
-import com.example.mank.LocalDatabaseFiles.entities.ContactWithMassengerEntity
 import com.example.mank.MainActivity
 import com.example.mank.MainActivity.Companion.setNewMassegeArriveValueToEmpty
 import com.example.mank.MainActivityClassForContext
 import com.example.mank.R
+
 import com.google.android.material.internal.ContextUtils
 import java.util.Objects
 

@@ -9,9 +9,6 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.room.Room.databaseBuilder
-import com.example.mank.DatabaseAdapter.ContactListAdapter
-import com.example.mank.LocalDatabaseFiles.MainDatabaseClass
 import com.example.mank.MainActivity
 import com.example.mank.MainActivity.Companion.saveContactProfileImageToStorage
 import com.example.mank.R

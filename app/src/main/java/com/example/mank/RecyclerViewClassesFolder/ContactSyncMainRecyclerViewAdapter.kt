@@ -17,7 +17,6 @@ import com.example.mank.LocalDatabaseFiles.entities.AllContactOfUserEntity
 import com.example.mank.LocalDatabaseFiles.entities.ContactWithMassengerEntity
 import com.example.mank.MainActivity
 import com.example.mank.R
-import com.example.mank.RecyclerViewClassesFolder.SearchModel.CourseModel
 
 class ContactSyncMainRecyclerViewAdapter(
     context: Context,

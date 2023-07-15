@@ -57,13 +57,14 @@ import com.example.mank.cipher.MyCipher
 import com.example.mank.configuration.GlobalVariables
 import com.example.mank.configuration.permissionMain
 import com.example.mank.configuration.permission_code
-import com.example.mank.databinding.ActivityMainBinding
 import com.example.mank.profile.AllSettingsActivity
 import com.example.mank.profile.BgImageSetForContactPage
 import com.example.mank.profile.UserProfileActivity
 import com.example.mank.socket.SocketClass
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
+import com.example.mank.R
+import com.example.mank.databinding.ActivityMainBinding
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import org.json.JSONArray

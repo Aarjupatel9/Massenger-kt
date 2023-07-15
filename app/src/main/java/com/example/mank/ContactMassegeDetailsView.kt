@@ -49,6 +49,7 @@ import java.util.TimerTask
 import android.content.BroadcastReceiver
 import android.content.IntentFilter
 import com.example.mank.MainActivity.Companion.ACTION_RUN_FUNCTION
+import com.example.mank.R
 
 
 class ContactMassegeDetailsView : Activity() {
