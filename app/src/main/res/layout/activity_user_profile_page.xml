@@ -26,7 +26,7 @@
             android:layout_marginStart="10dp"
             android:backgroundTint="@color/transparent"
             android:gravity="center"
-            android:onClick="FinishAUPPActivity"
+
             android:src="@drawable/baseline_arrow_back_24"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -85,27 +85,10 @@
                 android:cropToPadding="true"
                 android:onClick="ProfilePhotoOnClick"
                 android:padding="1sp"
-
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_baseline_person_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabUpload"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="40dp"
-                android:contentDescription="save profile photo"
-                android:onClick="FabUploadOnClick"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/userProfilePhoto"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/userProfilePhoto"
-                app:layout_constraintTop_toTopOf="@+id/userProfilePhoto"
-                app:srcCompat="@android:drawable/ic_menu_upload"
-                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/userProfilePhotoLabel"
@@ -113,7 +96,6 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10sp"
-                android:onClick="userProfilePhotoLabelOnClick"
                 android:text="Your Profile Photo "
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="@+id/userProfilePhoto"
@@ -217,60 +199,11 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-        <!--            android:id="@+id/constraint_layout_for_3"-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginStart="@dimen/user_profile_page_main_marginStart"-->
-        <!--            android:layout_marginTop="20dp"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintStart_toStartOf="parent"-->
-        <!--            app:layout_constraintTop_toBottomOf="@+id/constraint_layout_for_2">-->
-
-        <!--            <TextView-->
-        <!--                android:id="@+id/userOnlineStatusPrivacyEditHeading"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:text="Select How You allow to Other to see Your Online Status"-->
-        <!--                android:textColor="@color/black"-->
-        <!--                android:textSize="13sp"-->
-        <!--                app:layout_constraintStart_toStartOf="parent"-->
-        <!--                app:layout_constraintTop_toTopOf="@+id/constraint_layout_for_3" />-->
-
-
-        <!--            <RadioGroup-->
-        <!--                android:id="@+id/radioGroupForSelectingPrivacy"-->
-        <!--                android:layout_width="0dp"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:layout_marginTop="20dp"-->
-        <!--                app:layout_constraintEnd_toEndOf="parent"-->
-        <!--                app:layout_constraintStart_toStartOf="parent"-->
-        <!--                app:layout_constraintTop_toTopOf="@+id/userOnlineStatusPrivacyEditHeading">-->
-
-        <!--                <RadioButton-->
-        <!--                    android:id="@+id/onlineStatusAllowToAll"-->
-        <!--                    android:layout_width="wrap_content"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:text="allow other to see your lass seen"-->
-        <!--                    android:textColor="@color/black" />-->
-
-        <!--                <RadioButton-->
-        <!--                    android:id="@+id/onlineStatusDenyToAll"-->
-        <!--                    android:layout_width="wrap_content"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:text="Deny other to see your lass seen"-->
-        <!--                    android:textColor="@color/black" />-->
-        <!--            </RadioGroup>-->
-
-
-        <!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
-
         <Button
             android:id="@+id/AUPPSaveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="7sp"
-            android:onClick="UpdateUserProfileDetails"
             android:text="save"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

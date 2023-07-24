@@ -11,8 +11,8 @@ class contactDetailsHolderForSync(db: MainDatabaseClass) {
 
     init {
         val massegeDao = db.massegeDao()
-        allContact = massegeDao?.getAllContactDetailsFromDB(MainActivity.user_login_id)
-        connectedContact = massegeDao?.getConnectedContactDetailsFromDB(MainActivity.user_login_id)
-        disConnectedContact =massegeDao?.getDisConnectedContactDetailsFromDB(MainActivity.user_login_id)
+        allContact = massegeDao.getAllContactDetailsFromDB(MainActivity.user_login_id)
+        connectedContact = massegeDao.getConnectedContactDetailsFromDB(MainActivity.user_login_id)
+        disConnectedContact =massegeDao.getDisConnectedContactDetailsFromDB(MainActivity.user_login_id)
     }
 }

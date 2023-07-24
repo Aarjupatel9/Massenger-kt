@@ -84,7 +84,7 @@ class RecyclerViewAdapter(context: Context?) :
         }
         if (contact?.userImage == null) {
             holder.DPImageButton.setImageDrawable(
-                MainActivityClassForContext.appContext?.getResources()?.getDrawable(R.drawable.ic_baseline_person_24)
+                MainActivityClassForContext.appContext?.resources?.getDrawable(R.drawable.ic_baseline_person_24)
             )
         } else {
             val bitmap = BitmapFactory.decodeByteArray(contact.userImage, 0, contact.userImage?.size!!)

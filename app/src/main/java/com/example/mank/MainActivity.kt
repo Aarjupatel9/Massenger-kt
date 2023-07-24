@@ -154,10 +154,6 @@ class MainActivity : FragmentActivity() {
 
 	fun verifyLogin(code: Int) {
 		val login = Login()
-		if (!permissionMain.hasPermissions(this, *permission_code.PERMISSIONS)) {
-			ActivityCompat.requestPermissions(this, permission_code.PERMISSIONS, permission_code.PERMISSION_ALL)
-		}
-
 		if (login.isLogIn(db) == 0) {
 			Log.d("log-not logined", "onCreate: not login cond. reached")
 			val intent = Intent(this, LoginActivity::class.java)
@@ -176,6 +172,9 @@ class MainActivity : FragmentActivity() {
 	}
 
 	private fun startMain() {
+		if (!permissionMain.hasPermissions(this, *permission_code.PERMISSIONS_MUST_REQUIRED)) {
+			ActivityCompat.requestPermissions(this, permission_code.PERMISSIONS_MUST_REQUIRED, permission_code.PERMISSIONS_MUST_REQUIRED_CODE)
+		}
 		db = databaseBuilder(applicationContext, MainDatabaseClass::class.java, "MassengerDatabase").fallbackToDestructiveMigration().allowMainThreadQueries().build()
 		massegeDao = db!!.massegeDao()
 		val userIdEntityHolder = userIdEntityHolder(db!!)
@@ -271,16 +270,19 @@ class MainActivity : FragmentActivity() {
 	fun contactArrayListFilter(newText: String, flag: Int) {
 		if (flag == 0) {
 			Log.d("log-MainActivity", "contactArrayListFilter start with flag 0")
-			contactArrayList!!.clear()
-			contactArrayList!!.addAll(filteredContactArrayList!!)
-			recyclerViewAdapter!!.notifyDataSetChanged()
+			contactArrayList?.clear()
+			contactArrayList?.addAll(filteredContactArrayList!!)
+			recyclerViewAdapter?.notifyDataSetChanged()
 			return
 		}
 		Log.d("log-MainActivity", "contactArrayListFilter start")
 		contactArrayList!!.clear()
 		contactArrayList!!.addAll(filteredContactArrayList!!)
 		for (e in filteredContactArrayList!!) {
-			if (!e.DisplayName?.lowercase(Locale.getDefault())?.contains(newText.lowercase(Locale.getDefault()))!!) {
+			val displayNameMatches = e.DisplayName?.lowercase(Locale.getDefault())?.contains(newText.lowercase(Locale.getDefault())) ?: false
+			val mobileNumberMatches = e.MobileNumber.toString().contains(newText) ?: false
+
+			if (!displayNameMatches && !mobileNumberMatches) {
 				contactArrayList!!.remove(e)
 			}
 		}
@@ -315,11 +317,11 @@ class MainActivity : FragmentActivity() {
 	private fun CreateSocketConnection() {
 		Log.d("log-MainActivity", "CreateSocketConnection: start")
 		socketOBJ = SocketClass(db)
-		socket = socketOBJ!!.socket
+		socket = socketOBJ?.socket
 		if (socket == null) {
 			return
 		}
-		socketOBJ!!.joinRoom(user_login_id)
+		socketOBJ?.joinRoom(user_login_id)
 		socket!!.on(Socket.EVENT_CONNECT) {
 			Log.d("log-MainActivity", "onJoinAcknowledgement: join success ")
 			runOnUiThread { //                        Toast.makeText(MainActivity.this, "onJoinAcknowledgement: join success ", Toast.LENGTH_LONG).show();
@@ -474,6 +476,7 @@ class MainActivity : FragmentActivity() {
 							val intent = Intent(ACTION_RUN_FUNCTION)
 							sendBroadcast(intent)
 						} else {
+							contactListAdapter?.setTypingStatus(userId)
 							Log.d("log-onContactMassegeTypingEvent", "have to update in contact list lastMassege place")
 						}
 					} else {
@@ -797,29 +800,35 @@ class MainActivity : FragmentActivity() {
 	) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 		if (requestCode == permission_code.CAMERA_PERMISSION_CODE) {
-			if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) { //                Toast.makeText(MainActivity.this, "Camera Permission Granted", Toast.LENGTH_SHORT).show();
+			if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) { //                Toast.makeText(MainActivity.this, "Camera Permission Granted", Toast.LENGTH_SHORT).show();
 			} else {
 				Toast.makeText(this@MainActivity, "Camera Permission needed to use the massenger", Toast.LENGTH_SHORT).show()
 			}
 		} else if (requestCode == permission_code.STORAGE_PERMISSION_CODE) {
-			if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) { //                Toast.makeText(MainActivity.this, "Storage Permission Granted", Toast.LENGTH_SHORT).show();
+			if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) { //                Toast.makeText(MainActivity.this, "Storage Permission Granted", Toast.LENGTH_SHORT).show();
 			} else {
 				Toast.makeText(this@MainActivity, "Storage Permission needed to use the massenger", Toast.LENGTH_SHORT).show()
 			}
 		} else if (requestCode == permission_code.PERMISSION_ALL) {
-			if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+			if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 			} else {
 				Toast.makeText(this@MainActivity, "To use Massenger please give all permissions", Toast.LENGTH_SHORT).show() //                initContentResolver();
 				//                this.finish();
 			}
+		} else if (requestCode == permission_code.PERMISSIONS_MUST_REQUIRED_CODE) {
+			if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+			} else {
+				Toast.makeText(this@MainActivity, "contact and storage permissions are must require", Toast.LENGTH_SHORT).show() //                initContentResolver();
+				//                this.finish();
+			}
 		} else if (requestCode == permission_code.PERMISSION_CONTACT_SYNC) {
-			if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+			if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 				syncContactAtAppStart()
 			} else {
 				Toast.makeText(this@MainActivity, "To use Massenger please give Contact and Storage permission", Toast.LENGTH_SHORT).show()
 			}
 		} else if (requestCode == permission_code.PERMISSION_initContentResolver) {
-			if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) { //                initContentResolver();
+			if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) { //                initContentResolver();
 			} else {
 				Toast.makeText(this@MainActivity, "To use Massenger you must give the Contact Read and Write permission, please restart the app", Toast.LENGTH_SHORT)
 					.show() //                initContentResolver();
@@ -828,6 +837,7 @@ class MainActivity : FragmentActivity() {
 	}
 
 	companion object {
+		@SuppressLint("StaticFieldLeak")
 		@JvmField
 		var contactListAdapter: ContactListAdapter? = null
 		var FinishCode = 0
@@ -854,6 +864,7 @@ class MainActivity : FragmentActivity() {
 		@JvmField
 		var ChatsRecyclerView: RecyclerView? = null
 
+		@SuppressLint("StaticFieldLeak")
 		@JvmField
 		var recyclerViewAdapter: RecyclerViewAdapter? = null
 
@@ -867,6 +878,7 @@ class MainActivity : FragmentActivity() {
 		@JvmField
 		var MainContactListHolder: ContactListHolder? = null
 
+		@SuppressLint("StaticFieldLeak")
 		@JvmField
 		var MainActivityStaticContext: Context? = null
 
@@ -877,7 +889,7 @@ class MainActivity : FragmentActivity() {
 		var contactList: ArrayList<ContactWithMassengerEntity?>? = null
 
 		@JvmField
-		var ACTION_RUN_FUNCTION: String = "com.example.myapp.ACTION_RUN_FUNCTION"
+		var ACTION_RUN_FUNCTION: String = "com.massenger.mank.ACTION_TYPING_STATUS"
 
 		@JvmStatic
 		@SuppressLint("NotifyDataSetChanged")

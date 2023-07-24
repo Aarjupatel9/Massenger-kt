@@ -12,6 +12,7 @@ import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -33,6 +34,8 @@ class BgImageSetForContactPage() : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bg_image_set_for_contact_page)
+
+        findViewById<ImageButton>(R.id.ABGSBackActivity).setOnClickListener{finish()}
         bgImageView = findViewById(R.id.bgImageView)
         progressBar = findViewById(R.id.ABGSProgressBar)
         progressBar?.visibility = View.GONE
@@ -164,13 +167,11 @@ class BgImageSetForContactPage() : Activity() {
 
     private var passForSave = false
     private val blockSaveButton = false
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        Log.d(
+            "log-BgImageSetForContactPage", "onActivityResult resultCode = $resultCode")
         if (resultCode == RESULT_OK) {
-            Log.d(
-                "log-BgImageSetForContactPage",
-                "onActivityResult r(resultCode == Activity.RESULT_OK start"
-            )
             if (requestCode == IMAGE_RESULT) {
                 progressBar!!.visibility = View.VISIBLE
                 val filePath = getImageFilePath(data)
@@ -179,48 +180,42 @@ class BgImageSetForContactPage() : Activity() {
                         "log-UserProfileActivity",
                         "onActivityResult filepath not null : $filePath"
                     )
-                    val Ti = Thread(object : Runnable {
-                        override fun run() {
-
-//                            bitmap = BitmapFactory.decodeFile(filePath);
-                            passForSave = true
-                            val options = BitmapFactory.Options()
-                            options.inJustDecodeBounds = true
-                            BitmapFactory.decodeFile(filePath, options)
-                            val imageWidth = options.outWidth
-                            val imageHeight = options.outHeight
-                            val displayMetrics = DisplayMetrics()
-                            windowManager.defaultDisplay.getMetrics(displayMetrics)
-                            val TARGET_RESOLUTION_X = displayMetrics.widthPixels
-                            val TARGET_RESOLUTION_Y = displayMetrics.heightPixels
-                            var scaleFactor = 1
-                            if (imageWidth > TARGET_RESOLUTION_X || imageHeight > TARGET_RESOLUTION_Y) {
-                                val scaleX = imageWidth / TARGET_RESOLUTION_X
-                                val scaleY = imageHeight / TARGET_RESOLUTION_Y
-                                scaleFactor = Math.max(scaleX, scaleY)
-                            }
-                            options.inJustDecodeBounds = false
-                            options.inSampleSize = scaleFactor
-                            bitmap = BitmapFactory.decodeFile(filePath, options)
-                            if (bitmap?.getWidth() != TARGET_RESOLUTION_X || bitmap?.getHeight() != TARGET_RESOLUTION_Y) {
-                                val scaledBitmap = Bitmap.createScaledBitmap(bitmap!!, TARGET_RESOLUTION_X, TARGET_RESOLUTION_Y,
-                                    true
-                                )
-
-                                bitmap?.recycle()
-                                bitmap = scaledBitmap
-                            }
-                            val stream = ByteArrayOutputStream()
-                            bitmap!!.compress(Bitmap.CompressFormat.PNG, JPEG_QUALITY, stream)
-                            imageData = stream.toByteArray()
-                            runOnUiThread(object : Runnable {
-                                override fun run() {
-                                    bgImageView!!.setImageBitmap(bitmap)
-                                    progressBar!!.visibility = View.GONE
-                                }
-                            })
+                    val Ti = Thread { //                            bitmap = BitmapFactory.decodeFile(filePath);
+                        passForSave = true
+                        val options = BitmapFactory.Options()
+                        options.inJustDecodeBounds = true
+                        BitmapFactory.decodeFile(filePath, options)
+                        val imageWidth = options.outWidth
+                        val imageHeight = options.outHeight
+                        val displayMetrics = DisplayMetrics()
+                        windowManager.defaultDisplay.getMetrics(displayMetrics)
+                        val TARGET_RESOLUTION_X = displayMetrics.widthPixels
+                        val TARGET_RESOLUTION_Y = displayMetrics.heightPixels
+                        var scaleFactor = 1
+                        if (imageWidth > TARGET_RESOLUTION_X || imageHeight > TARGET_RESOLUTION_Y) {
+                            val scaleX = imageWidth / TARGET_RESOLUTION_X
+                            val scaleY = imageHeight / TARGET_RESOLUTION_Y
+                            scaleFactor = Math.max(scaleX, scaleY)
                         }
-                    })
+                        options.inJustDecodeBounds = false
+                        options.inSampleSize = scaleFactor
+                        bitmap = BitmapFactory.decodeFile(filePath, options)
+                        if (bitmap?.getWidth() != TARGET_RESOLUTION_X || bitmap?.getHeight() != TARGET_RESOLUTION_Y) {
+                            val scaledBitmap = Bitmap.createScaledBitmap(bitmap!!, TARGET_RESOLUTION_X, TARGET_RESOLUTION_Y, true)
+
+                            bitmap?.recycle()
+                            bitmap = scaledBitmap
+                        }
+                        val stream = ByteArrayOutputStream()
+                        bitmap!!.compress(Bitmap.CompressFormat.PNG, JPEG_QUALITY, stream)
+                        imageData = stream.toByteArray()
+                        runOnUiThread(object : Runnable {
+                            override fun run() {
+                                bgImageView!!.setImageBitmap(bitmap)
+                                progressBar!!.visibility = View.GONE
+                            }
+                        })
+                    }
                     Ti.start()
                 }
             }

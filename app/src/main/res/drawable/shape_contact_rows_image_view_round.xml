@@ -1,0 +1,16 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Outer rectangle shape -->
+    <item>
+        <shape>
+            <solid android:color="@color/red" /> <!-- Set the color for the outer area -->
+            <corners android:radius="0dp" /> <!-- Set the corner radius to 0 for a square shape -->
+        </shape>
+    </item>
+    <!-- Inner rounded shape with a transparent area -->
+    <item android:left="4dp" android:right="4dp" android:top="4dp" android:bottom="4dp">
+        <shape>
+            <solid android:color="@color/blue" /> <!-- Set the color for the inner transparent area -->
+            <corners android:radius="50sp" /> <!-- Set the corner radius for the rounded shape -->
+        </shape>
+    </item>
+</layer-list>

@@ -8,12 +8,11 @@
 
     <dimen name="MainMassege_size">15sp</dimen>
 
-
     <!--dimes for design 3-->
     <dimen name="headerTextSize">30sp</dimen>
     <dimen name="newsMoreTextSize">12sp</dimen>
     <dimen name="loginCardRadius">20dp</dimen>
-    <dimen name="loginViewsMargin">20dp</dimen>
+    <dimen name="loginViewsMargin">40dp</dimen>
 
     <dimen name="signup_text_margin_top">10dp</dimen>
 

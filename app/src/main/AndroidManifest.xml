@@ -76,6 +76,9 @@
         <activity
             android:name=".profile.PrivacySettingPage"
             android:exported="false" />
+        <activity
+            android:name=".profile.AccountSettingRecoveryEmailPage"
+            android:exported="false" />
 
         <receiver
             android:name=".networkPackage.NetworkChangeReceiver"

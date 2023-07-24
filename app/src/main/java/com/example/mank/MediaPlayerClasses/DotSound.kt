@@ -13,9 +13,6 @@ class DotSound(private val context: Context, id: Int) {
             mp = MediaPlayer.create(context, R.raw.massege_pop_alert)
         } else if (id == 1) {
             mp = MediaPlayer.create(context, R.raw.massege_pop_pup_notification_alert)
-        } else if (id == 10) {
-            //long music will play
-            mp = MediaPlayer.create(context, R.raw.dil_meri_na_sune)
         }
     }
 

@@ -75,6 +75,7 @@ class ContactMassegeDetailsView : Activity() {
 		updateOnlineStatusInUI(args);
 	}
 
+	@SuppressLint("SetTextI18n", "SimpleDateFormat")
 	fun updateOnlineStatusInUI(args: Array<Any?>?) {
 		if (args != null) {
 			try {

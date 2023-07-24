@@ -29,7 +29,34 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/b_user_image" />
+            app:srcCompat="@drawable/b_user_image"
+            />
+<!--        android:backgroundTint="@drawable/shape_contact_rows_image_view_round"-->
+
+
+        <!--        <FrameLayout-->
+<!--            android:id="@+id/DPImageButton"-->
+<!--            android:layout_width="50dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--        >-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/DPImageButton1"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:scaleType="centerCrop"-->
+<!--   ImageView             app:srcCompat="@drawable/b_user_image" />-->
+
+<!--&lt;!&ndash;            <&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_height="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:background="@drawable/shape_contact_rows_image_view_round" />&ndash;&gt;-->
+
+<!--        </FrameLayout>-->
+
 
         <TextView
             android:id="@+id/Display_Name"

@@ -13,7 +13,7 @@ import com.example.mank.LocalDatabaseFiles.entities.loginDetailsEntity
 
 @Database(
     entities = [MassegeEntity::class, loginDetailsEntity::class, ContactWithMassengerEntity::class, SetupFirstTimeEntity::class, AllContactOfUserEntity::class],
-    version = 2, exportSchema = false
+    version = 3, exportSchema = false
 )
 abstract class MainDatabaseClass : RoomDatabase() {
     abstract fun massegeDao(): MassegeDao

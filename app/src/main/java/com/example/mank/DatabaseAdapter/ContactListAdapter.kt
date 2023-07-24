@@ -2,11 +2,13 @@ package com.example.mank.DatabaseAdapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Handler
 import android.util.Log
 import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
 import com.example.mank.LocalDatabaseFiles.MainDatabaseClass
 import com.example.mank.LocalDatabaseFiles.entities.ContactWithMassengerEntity
 import com.example.mank.MainActivity
+import com.example.mank.MainActivity.Companion.user_login_id
 import com.google.android.material.internal.ContextUtils
 import org.json.JSONArray
 import org.json.JSONObject
@@ -56,35 +58,33 @@ class ContactListAdapter(db: MainDatabaseClass) {
 	}
 
 	private fun setUpProfileImages() {
-		val tu = Thread(object : Runnable {
-			override fun run() {
-				for (i in MainActivity.contactList!!) {
-					val CID = i?.CID
-					val imagePath = "/storage/emulated/0/Android/media/com.massenger.mank.main/Pictures/profiles/" + CID + MainActivity.user_login_id + ".png"
-					var byteArray: ByteArray? = null
-					try {
-						val imageFile = File(imagePath)
-						val fis = FileInputStream(imageFile)
-						val bos = ByteArrayOutputStream()
-						val buffer = ByteArray(1024)
-						var bytesRead: Int
-						while ((fis.read(buffer).also { bytesRead = it }) != -1) {
-							bos.write(buffer, 0, bytesRead)
-						}
-						fis.close()
-						bos.close()
-						byteArray = bos.toByteArray()
-					} catch (e: IOException) {
-						e.printStackTrace()
+		val tu = Thread {
+			for (i in MainActivity.contactList!!) {
+				val CID = i?.CID
+				val imagePath = "/storage/emulated/0/Android/media/com.massenger.mank.main/Pictures/profiles/" + CID + MainActivity.user_login_id + ".png"
+				var byteArray: ByteArray? = null
+				try {
+					val imageFile = File(imagePath)
+					val fis = FileInputStream(imageFile)
+					val bos = ByteArrayOutputStream()
+					val buffer = ByteArray(1024)
+					var bytesRead: Int
+					while ((fis.read(buffer).also { bytesRead = it }) != -1) {
+						bos.write(buffer, 0, bytesRead)
 					}
-					if (byteArray != null) {
-						Log.d("log-ContactListAdapter", "setUserImage : after fetch image form file system : " + byteArray.size)
-						i!!.userImage = byteArray
-						recyclerViewAdapterNotifyLocal()
-					}
+					fis.close()
+					bos.close()
+					byteArray = bos.toByteArray()
+				} catch (e: IOException) {
+					e.printStackTrace()
+				}
+				if (byteArray != null) {
+					Log.d("log-ContactListAdapter", "setUserImage : after fetch image form file system : " + byteArray.size)
+					i!!.userImage = byteArray
+					recyclerViewAdapterNotifyLocal()
 				}
 			}
-		})
+		}
 		tu.start()
 	}
 
@@ -114,7 +114,6 @@ class ContactListAdapter(db: MainDatabaseClass) {
 		}
 		Log.d("log-ContactListAdapter", "AddContact method end")
 	}
-
 
 	fun updateSelfUserImage(userImage: ByteArray) {
 		val ti = Thread {
@@ -191,6 +190,59 @@ class ContactListAdapter(db: MainDatabaseClass) {
 		}
 		tu.start()
 	}
+	val handler = Handler()
+	val typingCounter = mutableMapOf<String, Int>()
+	fun setTypingStatus(CID: String) {
 
+		Log.d("log-ContactMassegeDetailsView", "updateOnlineStatusToTypingInUI start")
+		// Increment the counter
+		typingCounter[CID] = (typingCounter[CID] ?: 0) + 1
+		// Calculate the delay based on the counter
+		val delayMillis: Long = 1000 // Multiply by 2000 milliseconds (2 seconds)
+		handler.postDelayed({
+			Log.d("log-ContactMassegeDetailsView", "updateOnlineStatusToTypingInUI updateOnlineStatusInUI call after $delayMillis seconds")
+			// Decrement the counter after the last run
+			typingCounter[CID] = (typingCounter[CID] ?: 0) - 1
+			// Check if it's the last run
+			if (typingCounter[CID]  == 0) {
+				val tu = Thread {
+					for (i in MainActivity.contactArrayList!!.indices) {
+						val contactView = MainActivity.contactArrayList!![i]
+						if (contactView?.CID == CID) {
+							val massege = massegeDao.getLastInsertedMassege(CID, MainActivity.user_login_id)
+							contactView.lastMassege = massege.toString()
+							MainActivity.contactArrayList!![i] = contactView
+							recyclerViewAdapterNotifyLocal()
+						}
+					}
+				}
+				tu.start()
+			}
+		}, delayMillis)
+
+
+
+		val tu = Thread {
+			for (i in MainActivity.contactArrayList!!.indices) {
+				val contactView = MainActivity.contactArrayList!![i]
+				if (contactView?.CID == CID) {
+					contactView.lastMassege = "typing..."
+					MainActivity.contactArrayList!![i] = contactView
+					recyclerViewAdapterNotifyLocal()
+				}
+			}
+		}
+		tu.start()
+
+	}
+
+	fun updateContactSavedName(number : Long, name : String){
+
+		val rowsUpdated = massegeDao.updateSavedNameOfUserEntity(number, name, user_login_id)
+		val rowsUpdated1 = massegeDao.updateSavedNameOfContactEntity(number, name, user_login_id)
+
+		recyclerViewAdapterNotifyLocal()
+
+	}
 
 }

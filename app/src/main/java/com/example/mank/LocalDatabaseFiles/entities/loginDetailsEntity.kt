@@ -53,6 +53,25 @@ class loginDetailsEntity {
         displayUserName = DisplayUserName
         this.about = about
     }
+    constructor(
+        UID: String,
+        Password: String,
+        MobileNumber: Long?,
+        DisplayUserName: String?,
+        about: String?,
+        RecoveryEmail : String?
+    ) {
+        this.Password = Password
+        this.MobileNumber = MobileNumber
+        this.UID = UID
+        displayUserName = DisplayUserName
+        this.about = about
+
+        if(RecoveryEmail != null){
+            this.es1 = RecoveryEmail;
+            this.elf1 = 1;
+        }
+    }
 
 
 }

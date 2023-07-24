@@ -9,11 +9,22 @@ object permission_code {
     const val STORAGE_PERMISSION_CODE = 104
     const val CONTACTS_PERMISSION_CODE = 105
     const val PERMISSION_ALL = 1
+    const val PERMISSIONS_MUST_REQUIRED_CODE = 4
     const val PERMISSION_CONTACT_SYNC = 3
     const val PERMISSION_initContentResolver = 2
     val PERMISSIONS = arrayOf(
         Manifest.permission.INTERNET,
         Manifest.permission.CAMERA,
+        Manifest.permission.ACCESS_NETWORK_STATE,
+        Manifest.permission.CHANGE_NETWORK_STATE,
+        Manifest.permission.ACCESS_WIFI_STATE,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_CONTACTS,
+        Manifest.permission.WRITE_CONTACTS
+    )
+    val PERMISSIONS_MUST_REQUIRED = arrayOf(
+        Manifest.permission.INTERNET,
         Manifest.permission.ACCESS_NETWORK_STATE,
         Manifest.permission.CHANGE_NETWORK_STATE,
         Manifest.permission.ACCESS_WIFI_STATE,
