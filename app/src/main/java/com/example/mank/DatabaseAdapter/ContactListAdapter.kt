@@ -35,13 +35,15 @@ class ContactListAdapter(db: MainDatabaseClass) {
 	private fun setUpLastMasseges() {
 		val ts = Thread {
 			for (i in MainActivity.contactList!!) {
-				if (i!!.CID != MainActivity.user_login_id) {
-					val massege = massegeDao.getLastInsertedMassege(i.CID, MainActivity.user_login_id)
+				if (i!!.CID != user_login_id) {
+					val massege = massegeDao.getLastInsertedMassege(i.CID, user_login_id)
 					i.lastMassege = (massege) ?: ""
 					Log.d("log-ContactListAdapter", "massege is : $massege for CID : " + i.CID + " and appUserId : " + MainActivity.user_login_id)
 				} else {
-					val massege = massegeDao.getSelfLastInsertedMassege(i.CID, MainActivity.user_login_id)
-					i.lastMassege = (massege)!!
+					val massege = massegeDao.getSelfLastInsertedMassege(i.CID, user_login_id)
+					if (massege != null) {
+						i.lastMassege = massege
+					}
 					Log.d("log-ContactListAdapter-self", "massege is : $massege for CID : " + i.CID + " and appUserId : " + MainActivity.user_login_id)
 				}
 			}
@@ -177,7 +179,19 @@ class ContactListAdapter(db: MainDatabaseClass) {
 		}
 	}
 
-	fun setLastMassege(CID: String?, massege: String) {
+	fun setLastMassege(CID: String?) {
+		val tu = Thread {
+			for (i in MainActivity.contactArrayList!!.indices) {
+				val contactView = MainActivity.contactArrayList!![i]
+				if (contactView?.CID == CID) {
+					contactView?.lastMassege = massegeDao.getLastInsertedMassege(CID, user_login_id).toString()
+					MainActivity.contactArrayList!![i] = contactView
+					recyclerViewAdapterNotifyLocal()
+				}
+			}
+		}
+		tu.start()
+	}fun setLastMassege(CID: String?, massege: String) {
 		val tu = Thread {
 			for (i in MainActivity.contactArrayList!!.indices) {
 				val contactView = MainActivity.contactArrayList!![i]

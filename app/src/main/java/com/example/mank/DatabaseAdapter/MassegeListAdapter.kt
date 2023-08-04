@@ -72,7 +72,7 @@ class MassegeListAdapter(db: MainDatabaseClass?) {
                             massegeOBJ.put("ef2", 0)
                             returnArray = JSONArray()
                             returnArray.put(massegeOBJ)
-                            MainActivity.socket!!.emit(
+                            MainActivity.socket?.emit(
                                 "massege_reach_read_receipt",
                                 4,
                                 MainActivity.user_login_id,

@@ -51,4 +51,14 @@ object permission_code {
     )
     val CONTACT_PERMISSION =
         arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
+
+
+
+
+
+
+
+    //permission code for startActivity for result
+    const val ADD_NEW_CONTACT_REQUEST_CODE = 107
 }
+

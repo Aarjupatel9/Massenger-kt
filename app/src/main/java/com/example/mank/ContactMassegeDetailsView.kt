@@ -198,12 +198,12 @@ class ContactMassegeDetailsView : Activity() {
 		ContactMassegeRecyclerView = findViewById(R.id.ContactMassegeRecyclerView)
 		CMDVConstraintLayoutMain = findViewById(R.id.CMDVConstraintLayoutMain)
 		setLocationButtonColor(true)
-		MainActivity.socket!!.on("CheckContactOnlineStatus_return", onCheckContactOnlineStatus_return)
+		MainActivity.socket?.on("CheckContactOnlineStatus_return", onCheckContactOnlineStatus_return)
 		massegeDao = MainActivity.db!!.massegeDao()
 		setAllMassege(CID!!)
 		setLastChatId()
 		setNewMassegeArriveValue(CID!!)
-		massege_field!!.addTextChangedListener(object : TextWatcher {
+		massege_field?.addTextChangedListener(object : TextWatcher {
 			override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 				Log.d("log-ContactMassegeDetailsView", "beforeTextChanged ")
 			}

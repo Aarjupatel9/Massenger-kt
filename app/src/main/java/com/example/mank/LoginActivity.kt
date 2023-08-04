@@ -461,6 +461,7 @@ class LoginActivity : Activity() {
 			val x: Boolean = conMgr.activeNetworkInfo != null && conMgr.activeNetworkInfo!!.isAvailable && conMgr.activeNetworkInfo!!.isConnected
 			if (x) { // Network is available, proceed with the HTTP request
 				Toast.makeText(this@LoginActivity, "Server side error :  $error", Toast.LENGTH_SHORT).show()
+				Log.d("log-LoginActivity", "checkHaveToRegister exception $error");
 			} else { // Network is not available, display a Toast message
 				Toast.makeText(this@LoginActivity, "Network is not available.", Toast.LENGTH_SHORT).show()
 			}

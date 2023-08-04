@@ -3,7 +3,6 @@ package com.example.mank.ThreadPackages
 import android.annotation.SuppressLint
 import android.content.Context
 import android.provider.ContactsContract
-import android.provider.ContactsContract.Contacts
 import android.util.Log
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Response
@@ -22,6 +21,8 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.util.TreeSet
 
+
+
 class SyncContactDetailsThread(private val context: Context, connectedContact: List<AllContactOfUserEntity?>?, disConnectedContact: List<AllContactOfUserEntity?>?, callback: IContactSync
 ) : Thread() {
 	private var type = 0
@@ -32,6 +33,8 @@ class SyncContactDetailsThread(private val context: Context, connectedContact: L
 	private val massegeDao: MassegeDao
 	private val mc = MyCipher()
 	private val callback: IContactSync
+
+
 	fun setFromWhere(type: Int) {
 		this.type = type
 	}

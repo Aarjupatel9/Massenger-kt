@@ -1,8 +1,10 @@
 package com.example.mank.configuration
 
 object GlobalVariables {
-    const val URL_MAIN = "http://13.234.177.94:10000/"
-    const val SOCKET_URL ="http://13.234.177.94:10001/"
+//    const val URL_MAIN = "http://13.234.177.94:10000/"
+//    const val SOCKET_URL ="http://13.234.177.94:10001/"
+    const val URL_MAIN = "http://35.154.246.182:10000/"
+    const val SOCKET_URL ="http://35.154.246.182:10001/"
 
     //    public static final String URL_MAIN = "http://15.207.249.39:10000/";
     //    public static final String SOCKET_URL = "http://15.207.249.39:10001/";

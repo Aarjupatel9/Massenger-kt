@@ -28,6 +28,7 @@ import com.example.mank.cipher.MyCipher
 import com.example.mank.configuration.permission_code.CONTACTS_PERMISSION_CODE
 import com.example.mank.configuration.permission_code.STORAGE_PERMISSION_CODE
 import com.example.mank.R
+import com.example.mank.configuration.permission_code.ADD_NEW_CONTACT_REQUEST_CODE
 import java.util.Locale
 import java.util.TreeSet
 
@@ -35,9 +36,9 @@ class AllContactOfUserInDeviceView : Activity() {
 	private var loadingPB: ProgressBar? = null
 	private var contactArrayList: ArrayList<AllContactOfUserEntity?> = ArrayList()
 	private var filteredContactArrayList: ArrayList<AllContactOfUserEntity?> = ArrayList()
-	var recyclerView1: RecyclerView? = null
+	private var recyclerView1: RecyclerView? = null
 	private var contactSyncMainRecyclerViewAdapter: ContactSyncMainRecyclerViewAdapter = ContactSyncMainRecyclerViewAdapter(this, contactArrayList)
-	var getUserContactDetailsFromPhone: GetUserContactDetailsFromPhone? = null
+	private var getUserContactDetailsFromPhone: GetUserContactDetailsFromPhone? = null
 	private var mc = MyCipher()
 	private var ACSPSearchView: SearchView? = null
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +93,7 @@ class AllContactOfUserInDeviceView : Activity() {
 	private var allContactOfUser: List<AllContactOfUserEntity?>? = ArrayList()
 	fun syncContactDetails(db: MainDatabaseClass?) {
 		getUserContactDetailsFromPhone = GetUserContactDetailsFromPhone(this@AllContactOfUserInDeviceView, db!!)
-		getUserContactDetailsFromPhone!!.start()
+		getUserContactDetailsFromPhone?.start()
 
 		//fetch existing data from database and display it
 		val contactDetailsHolder = contactDetailsHolderForSync(db)
@@ -153,13 +154,13 @@ class AllContactOfUserInDeviceView : Activity() {
 	//        }
 	//    }
 
-	val contactComparator = object : Comparator<AllContactOfUserEntity?> {
+	private val contactComparator = object : Comparator<AllContactOfUserEntity?> {
 		override fun compare(contact1: AllContactOfUserEntity?, contact2: AllContactOfUserEntity?): Int {
-			try {
-				return contact1?.DisplayName?.compareTo(contact2?.DisplayName ?: "", ignoreCase = true) ?: 0
+			return try {
+				contact1?.DisplayName?.compareTo(contact2?.DisplayName ?: "", ignoreCase = true) ?: 0
 			} catch (e: Exception) {
 				Log.d("log-AllContactOfUserDeviceView", "Exception in comparator: $e")
-				return 1
+				1
 			}
 		}
 	}
@@ -260,15 +261,12 @@ class AllContactOfUserInDeviceView : Activity() {
 		startActivityForResult(contactIntent, ADD_NEW_CONTACT_REQUEST_CODE)
 	}
 
-	private val ADD_NEW_CONTACT_REQUEST_CODE = 107
-	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
 		if (requestCode == ADD_NEW_CONTACT_REQUEST_CODE) {
 			start()
 			Log.d("log-onActivityResult", "onActivityResult: contact add activity finished")
-			if (data.data != null) {
-				Log.d("log-onActivityResult", "onActivityResult: " + resultCode + " | " + data.data.toString())
-			}
 			if (resultCode == RESULT_OK) {
 				Toast.makeText(this, "Contact added", Toast.LENGTH_SHORT).show()
 			}

@@ -438,54 +438,48 @@ class MainActivity : FragmentActivity() {
 			val profileImageBase64: String
 			try {
 				profileImageBase64 = args[2] as String
-				if (profileImageBase64 == null) {
-				} else {
-					val profileImageByteArray = Base64.decode(profileImageBase64, Base64.DEFAULT)
-					if (profileImageByteArray.size > 0) {
-						synchronized(this) {
-							val bitmapImage = BitmapFactory.decodeByteArray(profileImageByteArray, 0, profileImageByteArray.size)
-							Log.d("log-saveImageToInternalStorage", "Saved image of size : " + profileImageByteArray.size + " and resolution : " + bitmapImage.width + "*" + bitmapImage.height)
-							contactListAdapter!!.practiceMethod(id, profileImageByteArray) // to update contactList
-							if (saveContactProfileImageToStorage(id, profileImageByteArray)) {
-								massegeDao!!.updateProfileImageVersion(id, ProfileImageVersion, user_login_id)
-							}
+				val profileImageByteArray = Base64.decode(profileImageBase64, Base64.DEFAULT)
+				if (profileImageByteArray.isNotEmpty()) {
+					synchronized(this) {
+						val bitmapImage = BitmapFactory.decodeByteArray(profileImageByteArray, 0, profileImageByteArray.size)
+						Log.d("log-saveImageToInternalStorage", "Saved image of size : " + profileImageByteArray.size + " and resolution : " + bitmapImage.width + "*" + bitmapImage.height)
+						contactListAdapter!!.practiceMethod(id, profileImageByteArray) // to update contactList
+						if (saveContactProfileImageToStorage(id, profileImageByteArray)) {
+							massegeDao!!.updateProfileImageVersion(id, ProfileImageVersion, user_login_id)
 						}
 					}
-					Log.d("log-onUpdateSingleContactProfileImage", "ProfileImageVersion : " + ProfileImageVersion + " and for cid : " + id + " bytearray : " + Arrays.toString(profileImageByteArray))
 				}
+				Log.d("log-onUpdateSingleContactProfileImage", "ProfileImageVersion : " + ProfileImageVersion + " and for cid : " + id + " bytearray : " + Arrays.toString(profileImageByteArray))
 			} catch (ex: Exception) {
 				Log.d("log-onUpdateSingleContactProfileImage-Exception", ex.toString())
 			}
 		}
 	}
-	private val onContactMassegeTypingEvent: Emitter.Listener = object : Emitter.Listener {
-		@SuppressLint("NotifyDataSetChanged")
-		override fun call(vararg args: Any) {
-			Log.d("log-onContactMassegeTypingEvent", "onUpdateSingleContactProfileImage || start ")
-			try {
+	private val onContactMassegeTypingEvent: Emitter.Listener = Emitter.Listener { args ->
+		Log.d("log-onContactMassegeTypingEvent", "onUpdateSingleContactProfileImage || start ")
+		try {
 
-				val userId = args[0].toString()
-				val CID = args[1].toString()
+			val userId = args[0].toString()
+			val CID = args[1].toString()
 
-				//have to check userId ids present in contactList or not
-				thread {
-					var e: ContactWithMassengerEntity? = massegeDao?.checkCIDInConnectedSavedContact(CID, user_login_id);
-					if (e != null) {
-						if (Contact_page_opened_id == userId) {
-							Log.d("log-onContactMassegeTypingEvent", "sending broadcast event for typing start")
-							val intent = Intent(ACTION_RUN_FUNCTION)
-							sendBroadcast(intent)
-						} else {
-							contactListAdapter?.setTypingStatus(userId)
-							Log.d("log-onContactMassegeTypingEvent", "have to update in contact list lastMassege place")
-						}
+			//have to check userId ids present in contactList or not
+			thread {
+				var e: ContactWithMassengerEntity? = massegeDao?.checkCIDInConnectedSavedContact(CID, user_login_id);
+				if (e != null) {
+					if (Contact_page_opened_id == userId) {
+						Log.d("log-onContactMassegeTypingEvent", "sending broadcast event for typing start")
+						val intent = Intent(ACTION_RUN_FUNCTION)
+						sendBroadcast(intent)
 					} else {
-						Log.d("log-onContactMassegeTypingEvent", "Contact not found in database")
+						contactListAdapter?.setTypingStatus(userId)
+						Log.d("log-onContactMassegeTypingEvent", "have to update in contact list lastMassege place")
 					}
+				} else {
+					Log.d("log-onContactMassegeTypingEvent", "Contact not found in database")
 				}
-			} catch (e: Exception) {
-				Log.d("log-onUpdateSingleContactProfileImage", "Exception : $e")
 			}
+		} catch (e: Exception) {
+			Log.d("log-onUpdateSingleContactProfileImage", "Exception : $e")
 		}
 	}
 	private val onMassegeReachReadReceipt = Emitter.Listener { args ->
@@ -501,13 +495,13 @@ class MainActivity : FragmentActivity() {
 				if (Contact_page_opened_id == receiver_id) {
 					Log.d("log-onMassegeReachReadReceipt", "page is opened obj$data")
 					ContactMassegeDetailsView.massegeListAdapter?.updateMassegeStatus(receiver_id, massege_sent_time, viewStatus)
-				}
-
-				// update view status into database
+				}                // update view status into database
 				val t = Thread {
-					val massegeStatus = massegeDao!!.getMassegeStatus(sender_id, receiver_id, massege_sent_time, user_login_id)
-					if (massegeStatus < viewStatus) {
-						massegeDao!!.updateMassegeStatus(sender_id, receiver_id, massege_sent_time, viewStatus, user_login_id)
+					val massegeStatus = massegeDao?.getMassegeStatus(sender_id, receiver_id, massege_sent_time, user_login_id)
+					if (massegeStatus != null) {
+						if (massegeStatus < viewStatus) {
+							massegeDao?.updateMassegeStatus(sender_id, receiver_id, massege_sent_time, viewStatus, user_login_id)
+						}
 					}
 				}
 				t.start()
@@ -635,10 +629,76 @@ class MainActivity : FragmentActivity() {
 			} catch (e: Exception) {
 				Log.d("log-onMassegeArriveFromServer-Exception", "call: error while parsing data : $e")
 			}
+		} else if (requestCode == 1) {
+			var sentTime: Long = -1
+			try {
+				val new_massege = args[1] as JSONObject
+				Log.d("log-onMassegeArriveFromServer1", "args : $new_massege")
+				val senderId = new_massege["from"].toString()
+				sentTime = new_massege["time"] as Long
+				val contactArrayList1: ArrayList<ContactWithMassengerEntity?>? = contactArrayList
+				val massege = new_massege["massege"].toString()
+				var viewStatus = new_massege["massegeStatus"] as Int
+				val newMassegeEntity1 = MassegeEntity(senderId, user_login_id, massege, sentTime, viewStatus)
+				Log.d("log-onMassegeArriveFromServer1", "time : $sentTime")
+				for (i in contactArrayList1?.indices!!) {
+
+					Log.d("log-onMassegeArriveFromServer1", "massege arrive from known sources : ")
+					if (senderId == Contact_page_opened_id) {
+						Log.d("log-onMassegeArriveFromServer1", "Contact page is opened")
+						viewStatus = 3
+						val newMassegeEntity2 = MassegeEntity(senderId, user_login_id, new_massege["massege"].toString(), sentTime, viewStatus)
+						ContactMassegeDetailsView.massegeListAdapter?.addMassege(newMassegeEntity2, 1) //1 contact page is opened
+						val massegePopSoundThread = MassegePopSoundThread(this@MainActivity, 0)
+						massegePopSoundThread.start()
+					} else {
+						Log.d("log-onMassegeArriveFromServer1", "Contact page is not opened")
+						val contactView = contactArrayList1[i]
+
+						contactListAdapter?.setLastMassege(contactView?.CID)
+
+						runOnUiThread {
+							recyclerViewAdapter!!.notifyDataSetChanged()
+							ChatsRecyclerView!!.scrollToPosition(recyclerViewAdapter!!.itemCountMyOwn)
+						}
+
+						val massegeInsertIntoDatabase = Thread {
+							val massegeDao = db!!.massegeDao()
+							try {
+								massegeDao.insertMassegeIntoChat(newMassegeEntity1)
+								Log.d("log-onMassegeArriveFromServer1", "massege is inserted into database successfully")
+							} catch (e: Exception) {
+								showPopUpMessage(e.toString())
+								Log.d("log-sql-exception",
+									e.toString() + " for massege:" + newMassegeEntity1.massege + ", s_id:" + newMassegeEntity1.senderId + ", r_id:" + newMassegeEntity1.receiverId + ", time:" + newMassegeEntity1.timeOfSend + ", status:" + newMassegeEntity1.massegeStatus)
+								updateMassegeStatusFromException(new_massege)
+							}
+						}
+						massegeInsertIntoDatabase.start()
+					}
+				}
+				val jsonArray = JSONArray()
+				try {
+					val tmpOBJ = JSONObject()
+					tmpOBJ.put("to", newMassegeEntity1.receiverId)
+					tmpOBJ.put("from", senderId)
+					tmpOBJ.put("time", sentTime)
+
+					jsonArray.put(tmpOBJ)
+					socket!!.emit("massege_reach_read_receipt", 1, user_login_id, jsonArray)
+					Log.d("log-onMassegeArriveFromServer1", "massege_reach_read_receipt_acknowledgement socket emit :$jsonArray")
+				} catch (e: JSONException) {
+					e.printStackTrace()
+				}
+
+			} catch (e: Exception) {
+				Log.d("log-onMassegeArriveFromServer-Exception", "call: error while parsing data : $e")
+			}
 		} else {
 			showPopUpMessage("onMassegeArriveFromServer unHandled requestCode arrive : $requestCode") //                Toast.makeText(MainActivity.this, "onMassegeArriveFromServer unHandled requestCode arrive : "+requestCode, Toast.LENGTH_LONG).show();
 			Log.d("log-onMassegeArriveFromServer", "onMassegeArriveFromServer unHandled requestCode arrive : $requestCode")
 		}
+
 	}
 
 	//check if status is updatable or not and update
@@ -968,7 +1028,7 @@ class MainActivity : FragmentActivity() {
 			} catch (e: IOException) {
 				e.printStackTrace()
 				Log.d("log-saveImageToInternalStorage", "Image Save failed $e")
-			} // Print the absolute path of the saved image
+			}
 			return false
 		}
 	}

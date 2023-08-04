@@ -66,4 +66,31 @@ class MassegeEntity {
         this.massegeStatus = massegeStatus
         appUserId = MainActivity.user_login_id
     }
+    constructor(
+        UserId: String?,
+        CID: String?,
+        massege: String?,
+        timeOfSend: Long,
+        massegeStatus: Int,
+        es1 :String,
+        es2 :String,
+        elf1:Long,
+        elf2 :Long,
+        elf3 :Long,
+        elf4 :Long,
+    ) {
+        senderId = UserId
+        receiverId = CID
+        this.massege = massege
+        this.timeOfSend = timeOfSend
+        this.massegeStatus = massegeStatus
+        appUserId = MainActivity.user_login_id
+        
+        this.es1 = es1;
+        this.es2 = es2;
+        this.elf1 = elf1;
+        this.elf2 = elf2;
+        this.elf3 = elf3;
+        this.elf4 = elf4;
+    }
 }
