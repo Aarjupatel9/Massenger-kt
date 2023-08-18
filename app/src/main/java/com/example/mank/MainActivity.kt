@@ -28,6 +28,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import androidx.room.Room.databaseBuilder
+import androidx.viewpager2.widget.ViewPager2
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
 import com.android.volley.Response
@@ -50,7 +51,7 @@ import com.example.mank.LocalDatabaseFiles.entities.MassegeEntity
 import com.example.mank.LocalDatabaseFiles.entities.SetupFirstTimeEntity
 import com.example.mank.LoginMenagement.Login
 import com.example.mank.RecyclerViewClassesFolder.RecyclerViewAdapter
-import com.example.mank.TabMainHelper.SectionsPagerAdapter
+import com.example.mank.TabMainHelper.MainPageFragmentStateAdapter
 import com.example.mank.ThreadPackages.IContactSync
 import com.example.mank.ThreadPackages.MassegePopSoundThread
 import com.example.mank.ThreadPackages.StatusForThread
@@ -65,8 +66,9 @@ import com.example.mank.profile.UserProfileActivity
 import com.example.mank.socket.SocketClass
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
-import com.example.mank.R
 import com.example.mank.databinding.ActivityMainBinding
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import org.json.JSONArray
@@ -199,11 +201,25 @@ class MainActivity : FragmentActivity() {
 		mainProgressBar = binding!!.MPMainProgressBar
 		MAPSearchView = binding!!.MAPSearchView
 		mainProgressBar!!.visibility = View.GONE
-		val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
-		val viewPager = binding!!.MPViewPager
+
+		val sectionsPagerAdapter = MainPageFragmentStateAdapter(this)
+
+		val tabLayout: TabLayout = findViewById(R.id.MainTabs)
+		val viewPager: ViewPager2 = findViewById(R.id.MPViewPager)
 		viewPager.adapter = sectionsPagerAdapter
-		val tabs = binding!!.MainTabs
-		tabs.setupWithViewPager(viewPager)
+
+		TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+			val tabName = resources.getString(TAB_TITLES[position])
+			if (position == 0) {
+				tab.text = tabName
+			} else if (position == 1) {
+				tab.text = tabName
+			} else if (position == 2) {
+				tab.text = tabName
+			}
+
+		}.attach()
+
 		syncContactAtAppStart()
 		EverythingIsOhkInApp = true
 		MAPSearchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -431,7 +447,6 @@ class MainActivity : FragmentActivity() {
 			}
 
 
-
 		}
 		socket?.on("new_massege_from_server", onMassegeArriveFromServer)
 		socket?.on("send_massege_to_server_from_sender_acknowledgement", onMassegeReachAtServerFromCMDV)
@@ -483,7 +498,7 @@ class MainActivity : FragmentActivity() {
 						contactListAdapter?.updateImageIntoContactUI(id, profileImageByteArray) // to update contactList
 						if (saveContactProfileImageToStorage(id, profileImageByteArray)) {
 							contactsDao?.updateProfileImageVersion(id, profileImageVersion, user_login_id)
-							if(id== user_login_id){
+							if (id == user_login_id) {
 								userDao?.updateProfileImageVersion(id, profileImageVersion);
 							}
 						}
@@ -943,6 +958,8 @@ class MainActivity : FragmentActivity() {
 	}
 
 	companion object {
+		private val TAB_TITLES = intArrayOf(R.string.tab_name_1, R.string.tab_name_2, R.string.tab_name_3)
+
 		@SuppressLint("StaticFieldLeak")
 		@JvmField
 		var contactListAdapter: ContactListAdapter? = null

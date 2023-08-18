@@ -38,6 +38,10 @@ android {
 }
 
 dependencies {
+
+    //viewPager2
+    implementation("com.google.android.material:material:1.1.0-beta01")
+
 // Retrofit
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
 // Retrofit with Moshi Converter
@@ -81,13 +85,12 @@ dependencies {
     //end of room
 
 
-
     //socket
-    implementation ('io.socket:socket.io-client:2.1.0') {
+    implementation('io.socket:socket.io-client:2.1.0') {
         exclude group: 'org.json', module: 'json'
     }
 
-    implementation ('io.socket:socket.io-client:2.1.0') {
+    implementation('io.socket:socket.io-client:2.1.0') {
         exclude group: 'org.json', module: 'json'
     }
 
