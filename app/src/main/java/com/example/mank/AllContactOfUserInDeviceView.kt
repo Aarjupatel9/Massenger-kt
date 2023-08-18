@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mank.LocalDatabaseFiles.DAoFiles.ContactsDao
 import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
 import com.example.mank.LocalDatabaseFiles.DataContainerClasses.contactDetailsHolderForSync
 import com.example.mank.LocalDatabaseFiles.MainDatabaseClass
@@ -293,6 +294,8 @@ class AllContactOfUserInDeviceView : Activity() {
 	}
 
 	companion object {
+
 		var massegeDao: MassegeDao? = null
+		var contactDao: ContactsDao? = null
 	}
 }

@@ -8,8 +8,8 @@ class ContactImageHolderForSync(db: MainDatabaseClass) {
     val imageOfConnectedContact: List<AllContactOfUserEntity?>?
 
     init {
-        val massegeDao = db.massegeDao()
+        val contactDao = db.contactDao()
         imageOfConnectedContact =
-            massegeDao?.getConnectedContactImageList(MainActivity.user_login_id)
+            contactDao?.getConnectedContactImageList(MainActivity.user_login_id)
     }
 }

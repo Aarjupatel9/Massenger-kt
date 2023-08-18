@@ -23,10 +23,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.room.Room
-import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
+import com.example.mank.LocalDatabaseFiles.DAoFiles.UserDao
 import com.example.mank.LocalDatabaseFiles.DataContainerClasses.holdLoginData
 import com.example.mank.LocalDatabaseFiles.MainDatabaseClass
 import com.example.mank.MainActivity
+import com.example.mank.MainActivity.Companion.user_login_id
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.example.mank.R
 import io.socket.emitter.Emitter
@@ -47,7 +48,7 @@ import kotlin.arrayOf
 
 class UserProfileActivity() : Activity() {
 	private var picUri: Uri? = null
-	private var massegeDao: MassegeDao? = null
+	private var userDao: UserDao? = null
 	private val permissionsToRequest: ArrayList<String>? = null
 	private val permissionsRejected = ArrayList<String>()
 	private var ProfileUploadProgressBar: ProgressBar? = null
@@ -74,10 +75,10 @@ class UserProfileActivity() : Activity() {
 		val dataFromDatabase = holdLoginData.data
 
 		MainActivity.db?.let {
-			massegeDao = MainActivity.db?.massegeDao()
+			userDao = MainActivity.db?.userDao()
 		} ?: run {
 			MainActivity.db = Room.databaseBuilder(applicationContext, MainDatabaseClass::class.java, "MassengerDatabase").fallbackToDestructiveMigration().allowMainThreadQueries().build()
-			massegeDao = MainActivity.db?.massegeDao()
+			userDao = MainActivity.db?.userDao()
 		}
 
 		if (dataFromDatabase != null) {
@@ -184,7 +185,7 @@ class UserProfileActivity() : Activity() {
 						options.inJustDecodeBounds = false
 						options.inSampleSize = scaleFactor
 						bitmap = BitmapFactory.decodeFile(filePath, options)
-						if (bitmap?.getWidth() != TARGET_RESOLUTION || bitmap?.getHeight() != TARGET_RESOLUTION) {
+						if (bitmap?.width != TARGET_RESOLUTION || bitmap?.height != TARGET_RESOLUTION) {
 							val scaledBitmap = bitmap?.let {
 								Bitmap.createScaledBitmap(it, TARGET_RESOLUTION, TARGET_RESOLUTION, true)
 							} ?: bitmap
@@ -194,10 +195,6 @@ class UserProfileActivity() : Activity() {
 						}
 						val stream = ByteArrayOutputStream()
 						bitmap?.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, stream)
-						runOnUiThread(object : Runnable {
-							override fun run() { //                                    Toast.makeText(UserProfileActivity.this, "image resolution is : " + bitmap.getHeight() + "*" + bitmap.getWidth(), Toast.LENGTH_LONG).show();
-							}
-						})
 						imageData = stream.toByteArray()
 						runOnUiThread {
 							val compressedImageLength = imageData?.size
@@ -288,7 +285,7 @@ class UserProfileActivity() : Activity() {
 		}
 		if (set_display_name != username) {
 			if (MainActivity.socket != null) {
-				val successStatus = massegeDao?.updateDisplayUserName(set_display_name, MainActivity.user_login_id)
+				val successStatus = userDao?.updateDisplayUserName(set_display_name, MainActivity.user_login_id)
 				Log.d("log-success_status", "UpdateUserDisplayName: status is $successStatus")
 				MainActivity.socket?.on("updateUserDisplayName_return", onUpdateUserDisplayNameReturn)
 				ProfileUploadProgressBar?.visibility = View.VISIBLE
@@ -306,7 +303,7 @@ class UserProfileActivity() : Activity() {
 					MainActivity.socket?.on("updateUserAboutInfo_return", onUpdateUserAboutInfoReturn)
 					MainActivity.socket?.emit("updateUserAboutInfo", MainActivity.user_login_id, set_about_name)
 					ProfileUploadProgressBar?.visibility = View.VISIBLE
-					val successStatus = massegeDao?.updateAboutUserName(set_about_name, MainActivity.user_login_id)
+					val successStatus = userDao?.updateAboutUserName(set_about_name, MainActivity.user_login_id)
 					Log.d("log-success_status", "UpdateUserAboutInfo: status is $successStatus")
 				} else {
 					Toast.makeText(applicationContext, "about status can not be update right now, please try again after soe time", Toast.LENGTH_SHORT).show()
@@ -326,6 +323,9 @@ class UserProfileActivity() : Activity() {
 					MainActivity.socket?.emit("updateUserProfileImage", MainActivity.user_login_id, imageData)
 
 					Thread {
+						var  version = userDao?.getProfileImageVersion(user_login_id);
+						userDao?.updateProfileImageVersion(user_login_id, version?.plus(1) ?: 1);
+
 						saveImageToInternalStorage(bitmap)
 					}.start()
 					savePass = false

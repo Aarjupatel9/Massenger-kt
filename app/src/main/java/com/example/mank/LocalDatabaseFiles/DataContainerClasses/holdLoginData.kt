@@ -19,9 +19,9 @@ class holdLoginData {
 
         }
         if (db != null) {
-            val massegeDao = db!!.massegeDao()
+            val userDao = db?.userDao()
 
-            data = massegeDao.loginDetailsFromDatabase
+            data = userDao?.loginDetailsFromDatabase
         }
     }
 }

@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.provider.ContactsContract
 import android.util.Log
-import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
+import com.example.mank.LocalDatabaseFiles.DAoFiles.ContactsDao
 import com.example.mank.LocalDatabaseFiles.MainDatabaseClass
 import com.example.mank.LocalDatabaseFiles.entities.AllContactOfUserEntity
 import com.example.mank.MainActivity
@@ -16,7 +16,7 @@ class GetUserContactDetailsFromPhone(var context: Context, db: MainDatabaseClass
     var contactDetails: JSONArray
     var mc: MyCipher
     var db: MainDatabaseClass
-    var massegeDao: MassegeDao
+    var contactDao: ContactsDao? = null
     var isCompleted = false
 
     //tmp
@@ -24,7 +24,7 @@ class GetUserContactDetailsFromPhone(var context: Context, db: MainDatabaseClass
     init {
         mc = MyCipher()
         this.db = db
-        massegeDao = db.massegeDao()
+        contactDao = db.contactDao()
         contactDetails = JSONArray()
     }
 
@@ -69,11 +69,11 @@ class GetUserContactDetailsFromPhone(var context: Context, db: MainDatabaseClass
                     jsonParam.put(mc.encrypt(number))
                     contactDetails.put(jsonParam)
                     val x = allContactOfUserEntity!!.MobileNumber?.let {
-                        massegeDao.getSelectedAllContactOfUserEntity(
+                        contactDao?.getSelectedAllContactOfUserEntity(
                             it, MainActivity.user_login_id
                         )
                     }
-                    if (x?.size == 0) massegeDao.addAllContactOfUserEntity(allContactOfUserEntity)
+                    if (x?.size == 0) contactDao?.addAllContactOfUserEntity(allContactOfUserEntity)
                 }
                 counter++
             }

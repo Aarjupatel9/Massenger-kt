@@ -8,7 +8,7 @@ import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
-import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
+import com.example.mank.LocalDatabaseFiles.DAoFiles.ContactsDao
 import com.example.mank.LocalDatabaseFiles.entities.AllContactOfUserEntity
 import com.example.mank.MainActivity
 import com.example.mank.MainActivity.Companion.contactListAdapter
@@ -30,7 +30,7 @@ class SyncContactDetailsThread(private val context: Context, connectedContact: L
 	private var allContactOfUserEntityList: MutableList<AllContactOfUserEntity?> = ArrayList()
 	private val connectedContact: List<AllContactOfUserEntity?>?
 	private val disConnectedContact: List<AllContactOfUserEntity?>?
-	private val massegeDao: MassegeDao
+	private var contactDao: ContactsDao? = null
 	private val mc = MyCipher()
 	private val callback: IContactSync
 
@@ -51,7 +51,7 @@ class SyncContactDetailsThread(private val context: Context, connectedContact: L
 	}
 
 	init {
-		massegeDao = MainActivity.db?.massegeDao()!!
+		contactDao = MainActivity.db?.contactDao()
 		this.connectedContact = connectedContact
 		this.disConnectedContact = disConnectedContact
 		this.callback = callback
@@ -113,10 +113,10 @@ class SyncContactDetailsThread(private val context: Context, connectedContact: L
 					synchronized(this) {
 						for (entity in allContactOfUserEntityList) {
 							val x = entity?.MobileNumber?.let {
-								massegeDao.getSelectedAllContactOfUserEntity(it, user_login_id)
+								contactDao?.getSelectedAllContactOfUserEntity(it, user_login_id)
 							}
 							if (x?.size == 0) {
-								massegeDao.addAllContactOfUserEntity(entity)
+								contactDao?.addAllContactOfUserEntity(entity)
 							} else {
 								contactListAdapter?.updateContactSavedName(entity?.MobileNumber ?: 0L, entity?.DisplayName?:"")
 							}
@@ -150,7 +150,7 @@ class SyncContactDetailsThread(private val context: Context, connectedContact: L
 							}
 						}
 						if (isUpdatable) { //update CID
-							massegeDao.updateAllContactOfUserEntityCID(tnum, tCID, MainActivity.user_login_id)
+							contactDao?.updateAllContactOfUserEntityCID(tnum, tCID, MainActivity.user_login_id)
 							isUpdatableCount++
 						}
 					} catch (e: JSONException) {

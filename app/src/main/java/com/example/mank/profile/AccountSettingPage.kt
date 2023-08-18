@@ -9,15 +9,16 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
+import com.example.mank.LocalDatabaseFiles.DAoFiles.UserDao
 import com.example.mank.MainActivity
 import com.example.mank.R
 
 class AccountSettingPage : Activity() {
-	private var massegeDao: MassegeDao? = null
+	private var userDao: UserDao? = null
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_account_settings_page)
-		massegeDao = MainActivity.db?.massegeDao()
+		userDao = MainActivity.db?.userDao()
 	}
 
 	fun finishAccountSetting(view: View?) {
@@ -25,7 +26,7 @@ class AccountSettingPage : Activity() {
 	}
 
 	fun ACSPLogout(view: View?) {
-		massegeDao?.LogOutFromAppForThisUser(MainActivity.user_login_id)
+		userDao?.LogOutFromAppForThisUser(MainActivity.user_login_id)
 		Toast.makeText(this, "Restart the app after logout", Toast.LENGTH_LONG).show()
 		finishAffinity();
 		Log.d("log-AccountSettingPage", "After intent creation")

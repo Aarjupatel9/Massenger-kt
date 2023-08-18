@@ -493,11 +493,11 @@ class LoginActivity : Activity() {
 			val loginDetails = loginDetailsEntity(user_id, userPassword, number, displayName, about)
 			val db = databaseBuilder(applicationContext, MainDatabaseClass::class.java, "MassengerDatabase").allowMainThreadQueries().build()
 
-			val massegeDao = db.massegeDao()
-			massegeDao.SaveLoginDetailsInDatabase(loginDetails)
+			val userDao = db.userDao()
+			userDao.SaveLoginDetailsInDatabase(loginDetails)
 
 			if (RecoveryEmail != null) {
-				massegeDao.updateUserLoginRecoveryEmail(RecoveryEmail, 1, user_id)
+				userDao.updateUserLoginRecoveryEmail(RecoveryEmail, 1, user_id)
 			}
 
 			val returnIntent = Intent()

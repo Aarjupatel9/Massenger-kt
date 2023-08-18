@@ -10,8 +10,8 @@ class ContactListHolder(db: MainDatabaseClass?) {
     private var pass = false
 
     init {
-        val massegeDao = db?.massegeDao()
-        data = massegeDao?.getContactDetailsFromDatabase(MainActivity.user_login_id)
+        val contactDao = db?.contactDao()
+        data = contactDao?.getContactDetailsFromDatabase(MainActivity.user_login_id)
         mainContactList = ArrayList()
         mainContactList.addAll(data!!)
         pass = true

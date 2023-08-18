@@ -59,9 +59,9 @@ class ContactDetailsFromMassegeViewPage() : Activity() {
     private fun updateUserDetailsFromServer() {
         val ts = Thread(object : Runnable {
             override fun run() {
-                val massegeDao = MainActivity.db!!.massegeDao()
+                val contactDao = MainActivity.db?.contactDao()
                 val profileImageVersion =
-                    massegeDao?.getContactProfileImageVersion(CID, MainActivity.user_login_id)
+                    contactDao?.getContactProfileImageVersion(CID, MainActivity.user_login_id)
                 Log.d(
                     "log-ContactDetailsFromMassegeViewPage",
                     "image update part : $CID and : $profileImageVersion"
@@ -176,8 +176,8 @@ class ContactDetailsFromMassegeViewPage() : Activity() {
                         }
                     })
                     if (ProfileImageUpdatable == 1) {
-                        val massegeDao = MainActivity.db!!.massegeDao()
-                        val profileImageVersion = massegeDao?.getContactProfileImageVersion(
+                        val contactDao = MainActivity.db?.contactDao()
+                        val profileImageVersion = contactDao?.getContactProfileImageVersion(
                             CID,
                             MainActivity.user_login_id
                         )
@@ -220,14 +220,14 @@ class ContactDetailsFromMassegeViewPage() : Activity() {
                 val profileImageBase64 = args[2] as String
                 try {
                     val profileImageByteArray = Base64.decode(profileImageBase64, Base64.DEFAULT)
-                    if (profileImageByteArray.size > 0) {
+                    if (profileImageByteArray.isNotEmpty()) {
                         synchronized(this) {
                             val bitmapImage: Bitmap = BitmapFactory.decodeByteArray(
                                 profileImageByteArray,
                                 0,
                                 profileImageByteArray.size
                             )
-                            MainActivity.contactListAdapter!!.practiceMethod(
+                            MainActivity.contactListAdapter?.updateImageIntoContactUI(
                                 id,
                                 profileImageByteArray
                             ) // to update contactList

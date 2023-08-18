@@ -19,6 +19,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
+import com.example.mank.LocalDatabaseFiles.DAoFiles.UserDao
 import com.example.mank.MainActivity
 import com.example.mank.R
 import com.example.mank.configuration.GlobalVariables.URL_MAIN
@@ -28,7 +29,7 @@ import java.util.concurrent.TimeUnit
 
 
 class AccountSettingRecoveryEmailPage : Activity() {
-	private var massegeDao: MassegeDao? = null
+	private var userDao: UserDao? = null
 	private var loadingPB: ProgressBar? = null
 	private var otpLayoutShow: Boolean = false
 	private var ASHEmailAddressOtp: ConstraintLayout? = null
@@ -40,11 +41,11 @@ class AccountSettingRecoveryEmailPage : Activity() {
 		setContentView(R.layout.activity_account_settings_page_recovery_email_edit_)
 		loadingPB = findViewById(R.id.AASPREELoadingAnimation)
 		ASHEmailAddressOtp = findViewById<ConstraintLayout>(R.id.ASHEmailAddressOtp)
-		massegeDao = MainActivity.db!!.massegeDao()
+		userDao = MainActivity.db!!.userDao()
 		val handler = Handler()
 
 
-		val loginDetailsEntity = massegeDao?.loginDetailsFromDatabase
+		val loginDetailsEntity = userDao?.loginDetailsFromDatabase
 		if (loginDetailsEntity != null) {
 			findViewById<EditText>(R.id.ASHEmailAddressField).setText(loginDetailsEntity.es1)
 			if (loginDetailsEntity.elf1 == 1L) {
@@ -248,7 +249,7 @@ class AccountSettingRecoveryEmailPage : Activity() {
 		try {
 			val email = respObj.getString("email")
 
-			massegeDao?.updateUserLoginRecoveryEmail(email, 1L, MainActivity.user_login_id.toString())
+			userDao?.updateUserLoginRecoveryEmail(email, 1L, MainActivity.user_login_id.toString())
 			findViewById<ConstraintLayout>(R.id.ASHEmailAddressVerifyField).visibility = View.VISIBLE
 
 		} catch (e: JSONException) {

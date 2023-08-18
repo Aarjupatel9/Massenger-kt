@@ -48,6 +48,7 @@ import java.util.TimerTask
 
 import android.content.BroadcastReceiver
 import android.content.IntentFilter
+import com.example.mank.LocalDatabaseFiles.DAoFiles.ContactsDao
 import com.example.mank.MainActivity.Companion.ACTION_RUN_FUNCTION
 import com.example.mank.R
 
@@ -67,6 +68,7 @@ class ContactMassegeDetailsView : Activity() {
 
 	var keyboardPass = true
 	private var massegeDao: MassegeDao? = null
+	private var contactDao: ContactsDao? = null
 	private var online_status_checker_timer: Timer? = null
 	private var onlineStatusArgs: Array<Any?>? = null
 
@@ -199,7 +201,8 @@ class ContactMassegeDetailsView : Activity() {
 		CMDVConstraintLayoutMain = findViewById(R.id.CMDVConstraintLayoutMain)
 		setLocationButtonColor(true)
 		MainActivity.socket?.on("CheckContactOnlineStatus_return", onCheckContactOnlineStatus_return)
-		massegeDao = MainActivity.db!!.massegeDao()
+		massegeDao = MainActivity.db?.massegeDao()
+		contactDao = MainActivity.db?.contactDao()
 		setAllMassege(CID!!)
 		setLastChatId()
 		setNewMassegeArriveValue(CID!!)
@@ -291,7 +294,7 @@ class ContactMassegeDetailsView : Activity() {
 
 
 	private fun setNewMassegeArriveValue(cId: String) {
-		val t = Thread { massegeDao!!.updateNewMassegeArriveValue(cId, 0, MainActivity.user_login_id) }
+		val t = Thread { contactDao?.updateNewMassegeArriveValue(cId, 0, MainActivity.user_login_id) }
 		t.start()
 	}
 
@@ -343,8 +346,10 @@ class ContactMassegeDetailsView : Activity() {
 		var massege_status = -1
 		val current_date = Date()
 		val setPriorityRankThread = Thread {
-			val HighestPriority = massegeDao!!.getHighestPriorityRank(user_massege)
-			massegeDao!!.setPriorityRank(CID, HighestPriority + 1, user_massege)
+			val HighestPriority =contactDao?.getHighestPriorityRank(user_massege)
+			if (HighestPriority != null) {
+				contactDao?.setPriorityRank(CID, HighestPriority + 1, user_massege)
+			}
 			if (MainActivity.contactListAdapter != null) {
 				MainActivity.contactListAdapter!!.updatePositionOfContact(CID, this@ContactMassegeDetailsView)
 			}

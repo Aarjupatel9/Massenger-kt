@@ -136,13 +136,13 @@ class ContactSyncMainRecyclerViewAdapter(
 
                 // save contact to contactDetails table
                 val tx = Thread {
-                    val y = AllContactOfUserInDeviceView.massegeDao!!.getContactWith_CID(
+                    val y = AllContactOfUserInDeviceView.contactDao?.getContactWith_CID(
                         CID,
                         MainActivity.user_login_id
                     )
                     if (y == null) {
                         //if first time then store it to contactDetails table
-                        val x = AllContactOfUserInDeviceView.massegeDao?.getHighestPriorityRank(
+                        val x = AllContactOfUserInDeviceView.contactDao?.getHighestPriorityRank(
                             MainActivity.user_login_id
                         )
                         val newEntity = ContactWithMassengerEntity(

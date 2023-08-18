@@ -38,8 +38,8 @@ class AllSettingsActivity : Activity() {
         val ts = Thread(object : Runnable {
             override fun run() {
                 synchronized(this) {
-                    val massegeDao = MainActivity.db?.massegeDao()
-                    val loginDetailsEntity = massegeDao?.loginDetailsFromDatabase
+                    val userDao = MainActivity.db?.userDao()
+                    val loginDetailsEntity = userDao?.loginDetailsFromDatabase
                     runOnUiThread {
                         username?.text = loginDetailsEntity?.displayUserName
                         aboutInfo?.text = loginDetailsEntity?.about

@@ -176,10 +176,11 @@ class RecyclerViewAdapter(context: Context?) :
                     MainActivity.contactArrayList!!.removeIf { e -> e?.CID === CID }
                     MainActivity.filteredContactArrayList!!.removeIf { e -> e.CID === CID }
                     val t = Thread {
-                        val massegeDao = MainActivity.db!!.massegeDao()
+                        val contactDao = MainActivity.db?.contactDao()
+                        val massegeDao = MainActivity.db?.massegeDao()
                         val r1 =
-                            massegeDao.removeChatsFromMassegeTable(CID, MainActivity.user_login_id)
-                        val r2 = massegeDao.removeSelfContactFromContactTable(
+                            massegeDao?.removeChatsFromMassegeTable(CID, MainActivity.user_login_id)
+                        val r2 = contactDao?.removeSelfContactFromContactTable(
                             CID,
                             MainActivity.user_login_id
                         )

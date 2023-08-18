@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room.databaseBuilder
 import androidx.room.RoomDatabase
+import com.example.mank.LocalDatabaseFiles.DAoFiles.ContactsDao
 import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
+import com.example.mank.LocalDatabaseFiles.DAoFiles.UserDao
 import com.example.mank.LocalDatabaseFiles.entities.AllContactOfUserEntity
 import com.example.mank.LocalDatabaseFiles.entities.ContactWithMassengerEntity
 import com.example.mank.LocalDatabaseFiles.entities.MassegeEntity
@@ -17,6 +19,9 @@ import com.example.mank.LocalDatabaseFiles.entities.loginDetailsEntity
 )
 abstract class MainDatabaseClass : RoomDatabase() {
     abstract fun massegeDao(): MassegeDao
+    abstract fun userDao(): UserDao
+    abstract fun contactDao(): ContactsDao
+
 
     companion object {
         @Volatile

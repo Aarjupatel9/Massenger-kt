@@ -11,8 +11,8 @@ class userIdEntityHolder(db: MainDatabaseClass) {
     var userMobileNumber: Long
 
     init {
-        val massegeDao = db.massegeDao()
-        userLoginId = massegeDao.userIdFromDatabase
-        userMobileNumber = massegeDao.userMobileNumber
+        val userDao = db.userDao()
+        userLoginId = userDao.userIdFromDatabase
+        userMobileNumber = userDao.userMobileNumber
     }
 }

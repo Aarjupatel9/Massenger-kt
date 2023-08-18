@@ -35,7 +35,9 @@ import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.mank.DatabaseAdapter.ContactListAdapter
+import com.example.mank.LocalDatabaseFiles.DAoFiles.ContactsDao
 import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
+import com.example.mank.LocalDatabaseFiles.DAoFiles.UserDao
 import com.example.mank.LocalDatabaseFiles.DataContainerClasses.AppDetailsHolder
 import com.example.mank.LocalDatabaseFiles.DataContainerClasses.ContactListHolder
 import com.example.mank.LocalDatabaseFiles.DataContainerClasses.MassegeHolderForSpecificPurpose
@@ -87,6 +89,8 @@ class MainActivity : FragmentActivity() {
 	var LAUNCH_LOGIN_ACTIVITY = 1
 	var LoginIntentData: Intent? = null
 	private var massegeDao: MassegeDao? = null
+	private var userDao: UserDao? = null
+	private var contactsDao: ContactsDao? = null
 	private var binding: ActivityMainBinding? = null
 	override fun onStart() {
 		super.onStart() //        startBackgroundPractice();
@@ -147,7 +151,9 @@ class MainActivity : FragmentActivity() {
 		MainActivityStaticContext = this
 		db = Room.databaseBuilder(applicationContext, MainDatabaseClass::class.java, "MassengerDatabase").fallbackToDestructiveMigration().allowMainThreadQueries().build()
 
-		massegeDao = db!!.massegeDao()
+		massegeDao = db?.massegeDao()
+		userDao = db?.userDao()
+		contactsDao = db?.contactDao()
 		API_SERVER_API_KEY = getString(R.string.api_server_api_key)
 		verifyLogin(0)
 	}
@@ -176,7 +182,9 @@ class MainActivity : FragmentActivity() {
 			ActivityCompat.requestPermissions(this, permission_code.PERMISSIONS_MUST_REQUIRED, permission_code.PERMISSIONS_MUST_REQUIRED_CODE)
 		}
 		db = databaseBuilder(applicationContext, MainDatabaseClass::class.java, "MassengerDatabase").fallbackToDestructiveMigration().allowMainThreadQueries().build()
-		massegeDao = db!!.massegeDao()
+		massegeDao = db?.massegeDao()
+		userDao = db?.userDao()
+		contactsDao = db?.contactDao()
 		val userIdEntityHolder = userIdEntityHolder(db!!)
 		user_login_id = userIdEntityHolder.userLoginId
 		UserMobileNumber = userIdEntityHolder.userMobileNumber
@@ -229,7 +237,7 @@ class MainActivity : FragmentActivity() {
 
 	private var disConnectedContact: List<AllContactOfUserEntity?>? = ArrayList()
 	private var connectedContact: List<AllContactOfUserEntity?>? = ArrayList()
-	fun syncContactAtAppStart() {
+	private fun syncContactAtAppStart() {
 		if (!permissionMain.hasPermissions(this, *permission_code.CONTACT_STORAGE_PERMISSION)) {
 			ActivityCompat.requestPermissions(this, permission_code.PERMISSIONS, permission_code.PERMISSION_CONTACT_SYNC)
 			return
@@ -249,7 +257,7 @@ class MainActivity : FragmentActivity() {
 				Log.d("log-MainActivity", "Thread tf || exception e: $e")
 			}
 			val new_entity = SetupFirstTimeEntity()
-			massegeDao!!.insertLastAppOpenEntity(new_entity)
+			userDao?.insertLastAppOpenEntity(new_entity)
 		}
 		tf.start()
 		val contactDetailsHolder = contactDetailsHolderForSync(db!!)
@@ -322,7 +330,7 @@ class MainActivity : FragmentActivity() {
 			return
 		}
 		socketOBJ?.joinRoom(user_login_id)
-		socket!!.on(Socket.EVENT_CONNECT) {
+		socket?.on(Socket.EVENT_CONNECT) {
 			Log.d("log-MainActivity", "onJoinAcknowledgement: join success ")
 			runOnUiThread { //                        Toast.makeText(MainActivity.this, "onJoinAcknowledgement: join success ", Toast.LENGTH_LONG).show();
 			}
@@ -398,12 +406,19 @@ class MainActivity : FragmentActivity() {
 			val jsonArray = JSONArray()
 			try {
 				Log.d("log-MainActivity", "updating userProfileImages : " + contactArrayList!!.size)
+
+				//updating selfImage
+				val tmp = JSONObject()
+				tmp.put("_id", user_login_id)
+				tmp.put("Number", UserMobileNumber)
+				tmp.put("profileImageVersion", userDao?.getProfileImageVersion(user_login_id))
+				jsonArray.put(tmp)
 				for (e in contactArrayList!!) {
 					try {
 						val tmp = JSONObject()
 						tmp.put("_id", e?.CID)
 						tmp.put("Number", e?.MobileNumber)
-						tmp.put("ProfileImageVersion", e?.profileImageVersion)
+						tmp.put("profileImageVersion", e?.profileImageVersion)
 						jsonArray.put(tmp)
 					} catch (ex: Exception) {
 						Log.d("log-ContactListAdapter-Exception", ex.toString())
@@ -414,12 +429,16 @@ class MainActivity : FragmentActivity() {
 			} catch (exception: Exception) {
 				Log.d("log-ContactListAdapter-Exception", exception.toString())
 			}
+
+
+
 		}
 		socket?.on("new_massege_from_server", onMassegeArriveFromServer)
 		socket?.on("send_massege_to_server_from_sender_acknowledgement", onMassegeReachAtServerFromCMDV)
 		socket?.on("massege_reach_read_receipt", onMassegeReachReadReceipt)
 		socket?.on("updateSingleContactProfileImage", onUpdateSingleContactProfileImage)
 		socket?.on("contact_massege_typing_event", onContactMassegeTypingEvent)
+		socket?.on("update_displayName_and_about", onUpdateDisplayNameAndAbout)
 		socket?.on(Socket.EVENT_CONNECT_ERROR) { socket!!.connect() }
 		socket?.on(Socket.EVENT_DISCONNECT) {
 			Log.d("log-MainActivity", "Socket.EVENT_DISCONNECT socket.isActive() : ")
@@ -428,13 +447,31 @@ class MainActivity : FragmentActivity() {
 
 	//socket event listener define here
 	//completed
+	private val onUpdateDisplayNameAndAbout: Emitter.Listener = Emitter.Listener { args ->
+		Log.d("log-onUpdateDisplayNameAndAbout", "onUpdateSingleContactProfileImage || start ")
+		val displayName = args[0].toString()
+		val about = args[1].toString()
+		try {
+			if (displayName != "" && displayName.length < 3) {
+				userDao?.updateDisplayUserName(displayName, user_login_id);
+			}
+			if (about != "") {
+				userDao?.updateAboutUserName(about, user_login_id);
+			}
+
+
+			Log.d("log-onUpdateDisplayNameAndAbout", "displayName : $displayName and about : $about");
+		} catch (ex: Exception) {
+			Log.d("log-onUpdateDisplayNameAndAbout-Exception", ex.toString())
+		}
+	}
 	private val onUpdateSingleContactProfileImage: Emitter.Listener = object : Emitter.Listener {
 		@SuppressLint("NotifyDataSetChanged")
 		override fun call(vararg args: Any) {
 			Log.d("log-onUpdateSingleContactProfileImage", "onUpdateSingleContactProfileImage || start ")
 			val userId = args[0].toString()
 			val id = args[1].toString()
-			val ProfileImageVersion = args[3].toString().toLong()
+			val profileImageVersion = args[3].toString().toLong()
 			val profileImageBase64: String
 			try {
 				profileImageBase64 = args[2] as String
@@ -443,13 +480,16 @@ class MainActivity : FragmentActivity() {
 					synchronized(this) {
 						val bitmapImage = BitmapFactory.decodeByteArray(profileImageByteArray, 0, profileImageByteArray.size)
 						Log.d("log-saveImageToInternalStorage", "Saved image of size : " + profileImageByteArray.size + " and resolution : " + bitmapImage.width + "*" + bitmapImage.height)
-						contactListAdapter!!.practiceMethod(id, profileImageByteArray) // to update contactList
+						contactListAdapter?.updateImageIntoContactUI(id, profileImageByteArray) // to update contactList
 						if (saveContactProfileImageToStorage(id, profileImageByteArray)) {
-							massegeDao!!.updateProfileImageVersion(id, ProfileImageVersion, user_login_id)
+							contactsDao?.updateProfileImageVersion(id, profileImageVersion, user_login_id)
+							if(id== user_login_id){
+								userDao?.updateProfileImageVersion(id, profileImageVersion);
+							}
 						}
 					}
 				}
-				Log.d("log-onUpdateSingleContactProfileImage", "ProfileImageVersion : " + ProfileImageVersion + " and for cid : " + id + " bytearray : " + Arrays.toString(profileImageByteArray))
+				Log.d("log-onUpdateSingleContactProfileImage", "profileImageVersion : " + profileImageVersion + " and for cid : " + id + " bytearray : " + Arrays.toString(profileImageByteArray))
 			} catch (ex: Exception) {
 				Log.d("log-onUpdateSingleContactProfileImage-Exception", ex.toString())
 			}
@@ -464,7 +504,7 @@ class MainActivity : FragmentActivity() {
 
 			//have to check userId ids present in contactList or not
 			thread {
-				var e: ContactWithMassengerEntity? = massegeDao?.checkCIDInConnectedSavedContact(CID, user_login_id);
+				var e: ContactWithMassengerEntity? = contactsDao?.checkCIDInConnectedSavedContact(CID, user_login_id);
 				if (e != null) {
 					if (Contact_page_opened_id == userId) {
 						Log.d("log-onContactMassegeTypingEvent", "sending broadcast event for typing start")
@@ -525,7 +565,7 @@ class MainActivity : FragmentActivity() {
 	//completed
 	@SuppressLint("NotifyDataSetChanged")
 	private val onMassegeArriveFromServer = Emitter.Listener { args ->
-		val acknowledgement_id = args[0] as Int
+		val acknowledgementId = args[0] as Int
 		var requestCode = -1
 		try {
 			requestCode = args[2] as Int
@@ -573,13 +613,13 @@ class MainActivity : FragmentActivity() {
 							val massegePopSoundThread = MassegePopSoundThread(this@MainActivity, 1)
 							massegePopSoundThread.start()
 							val t = Thread {
-								massegeDao!!.incrementNewMassegeArriveValue(new_massege_sender_id, user_login_id)
+								contactsDao?.incrementNewMassegeArriveValue(new_massege_sender_id, user_login_id)
 							}
 							t.start()
 							val massegeInsertIntoDatabase = Thread {
-								val massegeDao = db!!.massegeDao()
+								val massegeDao = db?.massegeDao()
 								try {
-									massegeDao.insertMassegeIntoChat(newMassegeEntity1)
+									massegeDao?.insertMassegeIntoChat(newMassegeEntity1)
 									Log.d("log-onMassegeArriveFromServer3", "massege is inserted into database successfully")
 								} catch (e: Exception) {
 									showPopUpMessage(e.toString())
@@ -595,14 +635,16 @@ class MainActivity : FragmentActivity() {
 					}
 				}
 				val checkContactSavedInDB = Thread {
-					val x = massegeDao!!.getContactWith_CID(newMassegeEntity1.senderId, user_login_id)
+					val x = contactsDao?.getContactWith_CID(newMassegeEntity1.senderId, user_login_id)
 					if (x == null) {
 						Log.d("log-onMassegeArriveFromServer3", "setPriorityRankThread1")
-						FetchDataFromServerAndSaveIntoDB(newMassegeEntity1.senderId)
+						fetchDataFromServerAndSaveIntoDB(newMassegeEntity1.senderId)
 					} else {
 						val setPriorityRankThread = Thread {
-							val HighestPriority = massegeDao!!.getHighestPriorityRank(user_login_id)
-							massegeDao!!.setPriorityRank(newMassegeEntity1.senderId, HighestPriority + 1, user_login_id)
+							val highestPriority = contactsDao?.getHighestPriorityRank(user_login_id)
+							if (highestPriority != null) {
+								contactsDao?.setPriorityRank(newMassegeEntity1.senderId, highestPriority + 1, user_login_id)
+							}
 							if (contactListAdapter != null) {
 								contactListAdapter!!.updatePositionOfContact(newMassegeEntity1.senderId, this@MainActivity)
 							}
@@ -663,9 +705,9 @@ class MainActivity : FragmentActivity() {
 						}
 
 						val massegeInsertIntoDatabase = Thread {
-							val massegeDao = db!!.massegeDao()
+							val massegeDao = db?.massegeDao()
 							try {
-								massegeDao.insertMassegeIntoChat(newMassegeEntity1)
+								massegeDao?.insertMassegeIntoChat(newMassegeEntity1)
 								Log.d("log-onMassegeArriveFromServer1", "massege is inserted into database successfully")
 							} catch (e: Exception) {
 								showPopUpMessage(e.toString())
@@ -708,9 +750,11 @@ class MainActivity : FragmentActivity() {
 			val s = new_massege["from"].toString()
 			val r = new_massege["to"].toString()
 			val t = new_massege["time"] as Long
-			val vs = massegeDao!!.getMassegeStatus(s, r, t, user_login_id)
-			if (vs < massegeStatus) {
-				massegeDao!!.updateMassegeStatus(s, r, t, massegeStatus, user_login_id)
+			val vs = massegeDao?.getMassegeStatus(s, r, t, user_login_id)
+			if (vs != null) {
+				if (vs < massegeStatus) {
+					massegeDao?.updateMassegeStatus(s, r, t, massegeStatus, user_login_id)
+				}
 			}
 		} catch (e: Exception) {
 			Log.d("log-updateMassegeStatusFromException-function", e.toString())
@@ -727,9 +771,11 @@ class MainActivity : FragmentActivity() {
 			val receiver_id = new_massege["to"].toString()
 
 			//massegeListHolder update required;
-			val massegeStatus = massegeDao!!.getMassegeStatus(sender_id, receiver_id, time, user_login_id)
-			if (massegeStatus < 1) {
-				massegeDao!!.updateMassegeStatus(sender_id, receiver_id, time, 1, user_login_id)
+			val massegeStatus = massegeDao?.getMassegeStatus(sender_id, receiver_id, time, user_login_id)
+			if (massegeStatus != null) {
+				if (massegeStatus < 1) {
+					massegeDao?.updateMassegeStatus(sender_id, receiver_id, time, 1, user_login_id)
+				}
 			}
 			Log.d("log-onMassegeReachAtServerFromCMDV", new_massege.toString())
 		} catch (e: Exception) {
@@ -962,7 +1008,7 @@ class MainActivity : FragmentActivity() {
 
 		@SuppressLint("NotifyDataSetChanged")
 		@JvmStatic
-		fun FetchDataFromServerAndSaveIntoDB(CID: String?) {
+		fun fetchDataFromServerAndSaveIntoDB(CID: String?) {
 			val t = Thread {
 				val requestQueue = Volley.newRequestQueue(MainActivityStaticContext)
 				val endpoint = GlobalVariables.URL_MAIN + "GetContactDetailsOfUserToSaveLocally"
@@ -978,13 +1024,14 @@ class MainActivity : FragmentActivity() {
 						val Number = response[1].toString().toLong()
 						val Name = response[2] as String
 						val DisplayName = response[5] as String
-						val massegeDao = db!!.massegeDao()
-						val rank = massegeDao.getHighestPriorityRank(user_login_id)
-						val newContact = ContactWithMassengerEntity(Number, null, CID, rank + 1)
-						if (massegeDao.getContactWith_CID(CID, user_login_id) == null) {
-							massegeDao.SaveContactDetailsInDatabase(newContact)
-							massegeDao.setPriorityRank(CID, massegeDao.getHighestPriorityRank(user_login_id), user_login_id)
-							Log.d("log-MainActivity", "onResponse: newContact saved into with rank :" + (rank + 1)) // now we have to add contact into recyclerViewAdapter
+
+						val contactsDao = db?.contactDao()
+						val rank = contactsDao?.getHighestPriorityRank(user_login_id)
+						val newContact = ContactWithMassengerEntity(Number, null, CID, rank?.plus(1) ?: 1)
+						if (contactsDao?.getContactWith_CID(CID, user_login_id) == null) {
+							contactsDao?.SaveContactDetailsInDatabase(newContact)
+							contactsDao?.setPriorityRank(CID, contactsDao.getHighestPriorityRank(user_login_id), user_login_id)
+							Log.d("log-MainActivity", "onResponse: newContact saved into with rank :" + (rank?.plus(1) ?: 1)) // now we have to add contact into recyclerViewAdapter
 							contactArrayList!!.add(0, newContact)
 							recyclerViewAdapter!!.notifyDataSetChanged()
 						}

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.util.Log
+import com.example.mank.LocalDatabaseFiles.DAoFiles.ContactsDao
 import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
 import com.example.mank.LocalDatabaseFiles.MainDatabaseClass
 import com.example.mank.LocalDatabaseFiles.entities.ContactWithMassengerEntity
@@ -19,25 +20,34 @@ import java.io.IOException
 
 class ContactListAdapter(db: MainDatabaseClass) {
 	var massegeDao: MassegeDao
+	var contactDao: ContactsDao? = null
 	var context: Context? = null
 	var data: List<ContactWithMassengerEntity?>?
 
 	init {
-		massegeDao = db.massegeDao()!!
-		data = massegeDao.getContactDetailsFromDatabase(MainActivity.user_login_id)
+		massegeDao = db.massegeDao()
+		contactDao = db.contactDao()
+		data = contactDao?.getContactDetailsFromDatabase(user_login_id)
 		MainActivity.contactList = ArrayList()
-		MainActivity.contactList?.addAll((data)!!)
+		data?.let { MainActivity.contactList?.addAll(it) }
 		setUpLastMasseges()
 		setUpProfileImages()
 	}
 
-	@SuppressLint("RestrictedApi")
+	private fun  getTruncatedMassege(massege: String):String{
+		if(massege.length>20){
+			val slicedSubstring = massege.substring(0, 20)+"...";
+			return slicedSubstring;
+		}
+		return massege;
+	}
+	@SuppressLint("RestrictedApi", "NotifyDataSetChanged")
 	private fun setUpLastMasseges() {
 		val ts = Thread {
 			for (i in MainActivity.contactList!!) {
 				if (i!!.CID != user_login_id) {
 					val massege = massegeDao.getLastInsertedMassege(i.CID, user_login_id)
-					i.lastMassege = (massege) ?: ""
+					i.lastMassege = (getTruncatedMassege(massege?:"")) ?: ""
 					Log.d("log-ContactListAdapter", "massege is : $massege for CID : " + i.CID + " and appUserId : " + MainActivity.user_login_id)
 				} else {
 					val massege = massegeDao.getSelfLastInsertedMassege(i.CID, user_login_id)
@@ -97,7 +107,7 @@ class ContactListAdapter(db: MainDatabaseClass) {
 	@SuppressLint("NotifyDataSetChanged", "RestrictedApi")
 	fun addContact(newEntity: ContactWithMassengerEntity) {
 		Log.d("log-ContactListAdapter", "AddContact method start for " + newEntity.DisplayName + " , " + newEntity.MobileNumber)
-		val tx = Thread { massegeDao.SaveContactDetailsInDatabase(newEntity) }
+		val tx = Thread { contactDao?.SaveContactDetailsInDatabase(newEntity) }
 		tx.start()
 		MainActivity.contactList?.add(0, newEntity)
 		recyclerViewAdapterNotifyLocal()
@@ -153,7 +163,7 @@ class ContactListAdapter(db: MainDatabaseClass) {
 		MainActivity.ChatsRecyclerView!!.scrollToPosition(MainActivity.recyclerViewAdapter!!.itemCountMyOwn)
 	}
 
-	fun practiceMethod(CID: String, image: ByteArray) {
+	fun updateImageIntoContactUI(CID: String, image: ByteArray) {
 		Log.d("log-ContactListAdapter", "practiceMethod start : " + image.size)
 		for (i in MainActivity.contactList!!) {
 			if ((i?.CID == CID)) {
@@ -252,8 +262,8 @@ class ContactListAdapter(db: MainDatabaseClass) {
 
 	fun updateContactSavedName(number : Long, name : String){
 
-		val rowsUpdated = massegeDao.updateSavedNameOfUserEntity(number, name, user_login_id)
-		val rowsUpdated1 = massegeDao.updateSavedNameOfContactEntity(number, name, user_login_id)
+		val rowsUpdated = contactDao?.updateSavedNameOfUserEntity(number, name, user_login_id)
+		val rowsUpdated1 = contactDao?.updateSavedNameOfContactEntity(number, name, user_login_id)
 
 		recyclerViewAdapterNotifyLocal()
 
