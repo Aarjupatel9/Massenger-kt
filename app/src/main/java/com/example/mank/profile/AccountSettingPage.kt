@@ -5,11 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
-import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
-import com.example.mank.LocalDatabaseFiles.DAoFiles.UserDao
+import com.example.mank.localDatabaseFiles.daoClasses.UserDao
 import com.example.mank.MainActivity
 import com.example.mank.R
 

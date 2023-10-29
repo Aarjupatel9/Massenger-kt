@@ -1,8 +1,8 @@
 package com.example.mank.socket
 
 import android.util.Log
-import com.example.mank.LocalDatabaseFiles.DataContainerClasses.holdLoginData
-import com.example.mank.LocalDatabaseFiles.MainDatabaseClass
+import com.example.mank.localDatabaseFiles.dataContainerClasses.holdLoginData
+import com.example.mank.localDatabaseFiles.MainDatabaseClass
 import com.example.mank.MainActivity
 import com.example.mank.configuration.GlobalVariables
 import io.socket.client.IO

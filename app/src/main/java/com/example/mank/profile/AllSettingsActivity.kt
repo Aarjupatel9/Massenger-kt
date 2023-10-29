@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.example.mank.MainActivity
@@ -27,6 +28,11 @@ class AllSettingsActivity : Activity() {
         username = findViewById<View>(R.id.ASUsername) as TextView
         aboutInfo = findViewById<View>(R.id.ASAboutInfo) as TextView
         userProfileImage = findViewById<View>(R.id.ASUserProfileImage) as ImageView
+
+        findViewById<LinearLayout>(R.id.blockPageLayout).setOnClickListener {
+            val intent = Intent(this, BlockAccountPage::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onResume() {
@@ -111,8 +117,6 @@ class AllSettingsActivity : Activity() {
     }
 
     fun PrivacyPageLabelOnClick(view: View?) {
-//        Intent intent = new Intent(this, UserProfileActivity.class);
-//        startActivity(intent);
         Toast.makeText(this@AllSettingsActivity, "this option coming soon...", Toast.LENGTH_SHORT)
             .show()
     }

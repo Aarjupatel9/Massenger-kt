@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.util.Log
 import com.example.mank.ContactMassegeDetailsView
-import com.example.mank.FunctionalityClasses.MyStaticFunctions
+import com.example.mank.functionalityClasses.MyStaticFunctions
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 

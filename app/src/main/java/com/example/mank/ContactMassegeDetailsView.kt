@@ -27,12 +27,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import com.example.mank.DatabaseAdapter.MassegeListAdapter
-import com.example.mank.FunctionalityClasses.ContactDetailsFromMassegeViewPage
-import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
-import com.example.mank.LocalDatabaseFiles.entities.MassegeEntity
-import com.example.mank.MediaPlayerClasses.SoundThread
-import com.example.mank.RecyclerViewClassesFolder.ContactMassegeRecyclerViewAdapter
+import com.example.mank.databaseAdapter.MassegeListAdapter
+import com.example.mank.functionalityClasses.ContactDetailsFromMassegeViewPage
+import com.example.mank.localDatabaseFiles.daoClasses.MassegeDao
+import com.example.mank.localDatabaseFiles.entities.MassegeEntity
+import com.example.mank.mediaPlayerClasses.SoundThread
+import com.example.mank.recyclerViewClassesFolder.ContactMassegeRecyclerViewAdapter
 import io.socket.emitter.Emitter
 import org.json.JSONArray
 import org.json.JSONException
@@ -48,9 +48,10 @@ import java.util.TimerTask
 
 import android.content.BroadcastReceiver
 import android.content.IntentFilter
-import com.example.mank.LocalDatabaseFiles.DAoFiles.ContactsDao
+import android.widget.PopupMenu
+import com.example.mank.localDatabaseFiles.daoClasses.ContactsDao
 import com.example.mank.MainActivity.Companion.ACTION_RUN_FUNCTION
-import com.example.mank.R
+import com.example.mank.MainActivity.Companion.contactListAdapter
 
 
 class ContactMassegeDetailsView : Activity() {
@@ -123,17 +124,13 @@ class ContactMassegeDetailsView : Activity() {
 	var typingCounter = 0
 	fun updateOnlineStatusToTypingInUI() {
 		Log.d("log-ContactMassegeDetailsView", "updateOnlineStatusToTypingInUI start")
-		online_status_text_area!!.text = "typing..."
-		// Increment the counter
+		online_status_text_area!!.text = "typing..."		// Increment the counter
 		typingCounter++
-		val handler = Handler()
-		// Calculate the delay based on the counter
+		val handler = Handler()		// Calculate the delay based on the counter
 		val delayMillis: Long = 2000 // Multiply by 2000 milliseconds (2 seconds)
 		handler.postDelayed({
-			Log.d("log-ContactMassegeDetailsView", "updateOnlineStatusToTypingInUI updateOnlineStatusInUI call after $delayMillis seconds")
-			// Decrement the counter after the last run
-			typingCounter--
-			// Check if it's the last run
+			Log.d("log-ContactMassegeDetailsView", "updateOnlineStatusToTypingInUI updateOnlineStatusInUI call after $delayMillis seconds")			// Decrement the counter after the last run
+			typingCounter--			// Check if it's the last run
 			if (typingCounter == 0) {
 				updateOnlineStatusInUI(onlineStatusArgs)
 			}
@@ -163,7 +160,6 @@ class ContactMassegeDetailsView : Activity() {
 		Log.d("log-ContactMassegeDetailsView", "onResume registerReceiver initialized")
 	}
 
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		val intent = intent
@@ -189,14 +185,30 @@ class ContactMassegeDetailsView : Activity() {
 		CDMVNewUserConstraintLayout = findViewById(R.id.CDMVNewUserConstraintLayout)
 		if (ContactName == null) {
 			CDMVNewUserConstraintLayout?.setVisibility(View.VISIBLE)
-			Contact_name_of_user?.setText(ContactMobileNumber.toString())
+			Contact_name_of_user?.text = ContactMobileNumber.toString()
 		} else {
-			Contact_name_of_user?.setText(ContactName)
+			Contact_name_of_user?.text = ContactName
 		}
+		findViewById<TextView>(R.id.ContactSideMenuCaller).setOnClickListener {
+			Log.d("log-enter", "getMainSideMenu: enter here")
+			val popup = PopupMenu(this, it)
+			val inflater = popup.menuInflater
+			inflater.inflate(R.menu.contact_main_popup, popup.menu)
+			popup.show()
+			popup.setOnMenuItemClickListener { item ->
+				if (item.itemId == R.id.ContactMenuBlock) {
+					contactListAdapter?.blockContact(CID!!)
+					this.finish()
+				}
+				false
+			}
+		}
+
 		massege_field = findViewById<View>(R.id.write_massege) as EditText
 		OtherActivityButton = findViewById<View>(R.id.OtherActivityButton) as ImageButton
-		send_massege_button = findViewById<View>(R.id.send_massege_button) as ImageButton
-		send_massege_button!!.isClickable = false
+		send_massege_button = findViewById<View>(R.id.sendMassegeButton) as ImageButton
+		send_massege_button?.setOnClickListener { sendMassege() }
+		send_massege_button?.isClickable = false
 		ContactMassegeRecyclerView = findViewById(R.id.ContactMassegeRecyclerView)
 		CMDVConstraintLayoutMain = findViewById(R.id.CMDVConstraintLayoutMain)
 		setLocationButtonColor(true)
@@ -214,10 +226,12 @@ class ContactMassegeDetailsView : Activity() {
 			override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 				Log.d("log-ContactMassegeDetailsView", "onTextChanged ")
 				MainActivity.socket!!.emit("contact_massege_typing_event", MainActivity.user_login_id, MainActivity.Contact_page_opened_id)
-				if (massege_field!!.text.toString() != "") {
-					send_massege_button!!.isClickable = !massege_field!!.text.toString().trim { it <= ' ' }.isBlank()
+				if (massege_field?.text.toString().trim() != "") {
+					send_massege_button?.isClickable = true
+					Log.d("log-ContactMassegeDetailsView", "onTextChanged : isClickable true")
 				} else {
-					send_massege_button!!.isClickable = false
+					Log.d("log-ContactMassegeDetailsView", "onTextChanged : isClickable false")
+					send_massege_button?.isClickable = false
 				}
 			}
 
@@ -288,7 +302,7 @@ class ContactMassegeDetailsView : Activity() {
 	}
 
 	public override fun onDestroy() {
-		super.onDestroy() //        online_status_checker.interrupt();
+		super.onDestroy() // online_status_checker.interrupt();
 		online_status_checker_timer!!.cancel()
 	}
 
@@ -305,13 +319,13 @@ class ContactMassegeDetailsView : Activity() {
 
 	private fun setAllMassege(CID: String) {
 		massegeArrayList = ArrayList()
-		massegeListAdapter!!.setMyContext(this)
-		massegeListAdapter!!.fillMassegeListOfUser(CID)
-		ContactMassegeRecyclerView!!.setHasFixedSize(true)
-		ContactMassegeRecyclerView!!.layoutManager = LinearLayoutManager(this)
+		massegeListAdapter?.setMyContext(this)
+		massegeListAdapter?.fillMassegeListOfUser(CID)
+		ContactMassegeRecyclerView?.setHasFixedSize(true)
+		ContactMassegeRecyclerView?.layoutManager = LinearLayoutManager(this)
 		massegeRecyclerViewAdapter = ContactMassegeRecyclerViewAdapter(this, massegeArrayList!!)
-		ContactMassegeRecyclerView!!.adapter = massegeRecyclerViewAdapter //        Log.d("log-list-size", "setAllMassege: list size is :" + massegeRecyclerViewAdapter.getItemCountMyOwn());
-		ContactMassegeRecyclerView!!.scrollToPosition(massegeRecyclerViewAdapter!!.itemCountMyOwn)
+		ContactMassegeRecyclerView?.adapter = massegeRecyclerViewAdapter //        Log.d("log-list-size", "setAllMassege: list size is :" + massegeRecyclerViewAdapter.getItemCountMyOwn());
+		ContactMassegeRecyclerView?.scrollToPosition(massegeRecyclerViewAdapter!!.itemCountMyOwn)
 	}
 
 	fun getContactDetailsOfUser(view: View?) {
@@ -320,7 +334,7 @@ class ContactMassegeDetailsView : Activity() {
 		intent.putExtra("ContactMobileNumber", ContactMobileNumber)
 		intent.putExtra("CID", CID)
 		intent.putExtra("ContactName", ContactName)
-		startActivity(intent) //        Toast.makeText(this, "you Clicked in User name", Toast.LENGTH_SHORT).show();
+		startActivity(intent)
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
@@ -337,7 +351,7 @@ class ContactMassegeDetailsView : Activity() {
 	}
 
 	@SuppressLint("NotifyDataSetChanged")
-	fun SendMassege(view: View?) {
+	fun sendMassege() {
 		counter++
 		val user_massege = massege_field!!.text.toString().trim { it <= ' ' }
 		Log.d("log-SendMassege", "user_massege is : $user_massege")
@@ -346,7 +360,7 @@ class ContactMassegeDetailsView : Activity() {
 		var massege_status = -1
 		val current_date = Date()
 		val setPriorityRankThread = Thread {
-			val HighestPriority =contactDao?.getHighestPriorityRank(user_massege)
+			val HighestPriority = contactDao?.getHighestPriorityRank(user_massege)
 			if (HighestPriority != null) {
 				contactDao?.setPriorityRank(CID, HighestPriority + 1, user_massege)
 			}
@@ -407,7 +421,7 @@ class ContactMassegeDetailsView : Activity() {
 	}
 
 	private var LocationSharingEnable = false
-	fun askPermissionToShareLocation() {
+	private fun askPermissionToShareLocation() {
 		val builder = AlertDialog.Builder(this)
 		builder.setMessage("Start sharing your Location with $ContactName")
 		builder.setPositiveButton("Start sharing") { dialog, which -> //                Log.d("log-ContactMassegeDetailsView", "");
@@ -432,8 +446,7 @@ class ContactMassegeDetailsView : Activity() {
 	private fun startLocationShareWithContact() {}
 	private fun stopLocationShareWithContact() {}
 	private fun setLocationButtonColor(value: Boolean) {
-		val wrapper: ContextThemeWrapper
-		wrapper = if (value) {
+		val wrapper: ContextThemeWrapper = if (value) {
 			ContextThemeWrapper(this, R.style.LocationButtonDefaultScene)
 		} else {
 			ContextThemeWrapper(this, R.style.LocationButtonUpdatedScene)

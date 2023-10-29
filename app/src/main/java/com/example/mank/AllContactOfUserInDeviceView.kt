@@ -16,19 +16,18 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.mank.LocalDatabaseFiles.DAoFiles.ContactsDao
-import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
-import com.example.mank.LocalDatabaseFiles.DataContainerClasses.contactDetailsHolderForSync
-import com.example.mank.LocalDatabaseFiles.MainDatabaseClass
-import com.example.mank.LocalDatabaseFiles.entities.AllContactOfUserEntity
-import com.example.mank.RecyclerViewClassesFolder.ContactSyncMainRecyclerViewAdapter
-import com.example.mank.ThreadPackages.GetUserContactDetailsFromPhone
-import com.example.mank.ThreadPackages.IContactSync
-import com.example.mank.ThreadPackages.SyncContactDetailsThread
+import com.example.mank.localDatabaseFiles.daoClasses.ContactsDao
+import com.example.mank.localDatabaseFiles.daoClasses.MassegeDao
+import com.example.mank.localDatabaseFiles.dataContainerClasses.contactDetailsHolderForSync
+import com.example.mank.localDatabaseFiles.MainDatabaseClass
+import com.example.mank.localDatabaseFiles.entities.AllContactOfUserEntity
+import com.example.mank.recyclerViewClassesFolder.ContactSyncMainRecyclerViewAdapter
+import com.example.mank.threadPackages.GetUserContactDetailsFromPhone
+import com.example.mank.threadPackages.IContactSync
+import com.example.mank.threadPackages.SyncContactDetailsThread
 import com.example.mank.cipher.MyCipher
 import com.example.mank.configuration.permission_code.CONTACTS_PERMISSION_CODE
 import com.example.mank.configuration.permission_code.STORAGE_PERMISSION_CODE
-import com.example.mank.R
 import com.example.mank.configuration.permission_code.ADD_NEW_CONTACT_REQUEST_CODE
 import java.util.Locale
 import java.util.TreeSet
@@ -51,7 +50,6 @@ class AllContactOfUserInDeviceView : Activity() {
 		ACSPSearchView = findViewById(R.id.ACSPSearchView)
 		contactArrayList = ArrayList()
 		start()
-		massegeDao = MainActivity.db!!.massegeDao()
 		ACSPSearchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 			override fun onQueryTextSubmit(query: String): Boolean {
 				Log.d("log-MainActivity", "onQueryTextChange newText:$query")
@@ -295,7 +293,5 @@ class AllContactOfUserInDeviceView : Activity() {
 
 	companion object {
 
-		var massegeDao: MassegeDao? = null
-		var contactDao: ContactsDao? = null
 	}
 }

@@ -23,12 +23,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.room.Room
-import com.example.mank.LocalDatabaseFiles.DAoFiles.UserDao
-import com.example.mank.LocalDatabaseFiles.DataContainerClasses.holdLoginData
-import com.example.mank.LocalDatabaseFiles.MainDatabaseClass
+import com.example.mank.localDatabaseFiles.daoClasses.UserDao
+import com.example.mank.localDatabaseFiles.dataContainerClasses.holdLoginData
+import com.example.mank.localDatabaseFiles.MainDatabaseClass
 import com.example.mank.MainActivity
 import com.example.mank.MainActivity.Companion.user_login_id
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.example.mank.R
 import io.socket.emitter.Emitter
 import java.io.ByteArrayOutputStream
@@ -36,8 +35,6 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.Boolean
-import kotlin.Any
 import kotlin.Array
 import kotlin.ByteArray
 import kotlin.Int

@@ -14,8 +14,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -24,13 +22,12 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.room.Room.databaseBuilder
-import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.mank.LocalDatabaseFiles.MainDatabaseClass
-import com.example.mank.LocalDatabaseFiles.entities.loginDetailsEntity
+import com.example.mank.localDatabaseFiles.MainDatabaseClass
+import com.example.mank.localDatabaseFiles.entities.loginDetailsEntity
 import com.example.mank.cipher.MyCipher
 import com.example.mank.configuration.GlobalVariables
 import com.example.mank.configuration.permissionMain

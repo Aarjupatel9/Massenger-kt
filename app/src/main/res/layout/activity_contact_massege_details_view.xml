@@ -7,13 +7,12 @@
     android:layout_height="match_parent"
     tools:context=".ContactMassegeDetailsView">
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/full_layout_of_app_bar_constraint"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:gravity="top"
         android:background="@color/MainHeaderColor"
+        android:gravity="top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -22,69 +21,71 @@
             android:id="@+id/CMDVBackImageButton1"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginVertical="7dp"
+            android:layout_marginStart="7dp"
+            android:backgroundTint="@color/transparent"
+            android:gravity="center"
             android:onClick="FinishCMDVActivity"
             android:src="@drawable/baseline_arrow_back_24"
-            android:backgroundTint="@color/transparent"
             android:textAlignment="center"
-            android:gravity="center"
-            android:layout_marginStart="7dp"
-            android:layout_marginVertical="7dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                app:layout_constraintBottom_toBottomOf="@id/full_layout_of_app_bar_constraint"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/CMDVBackImageButton1"
-                app:layout_constraintTop_toTopOf="@+id/full_layout_of_app_bar_constraint">
-
-                <TextView
-                    android:id="@+id/Contact_name_of_user"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:onClick="getContactDetailsOfUser"
-                    android:text="@string/Contact_name_in_particular_page"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toTopOf="@+id/Contact_last_come_in_app_status"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/Contact_last_come_in_app_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/Contact_name_of_user" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/full_layout_of_app_bar_constraint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/CMDVBackImageButton1"
+            app:layout_constraintTop_toTopOf="@+id/full_layout_of_app_bar_constraint">
 
             <TextView
-                android:id="@+id/Settings_in_contact_massege_details_view"
+                android:id="@+id/Contact_name_of_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:onClick="getTestingSite"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="@string/vertical_ellipsis_3_dot"
-                android:textSize="25sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:clickable="true"
+                android:onClick="getContactDetailsOfUser"
+                android:text="@string/Contact_name_in_particular_page"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/Contact_last_come_in_app_status"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/Contact_last_come_in_app_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Contact_name_of_user" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <TextView
+            android:id="@+id/ContactSideMenuCaller"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5sp"
+            android:layout_marginEnd="16dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center"
+            android:paddingVertical="10dp"
+            android:text="@string/vertical_ellipsis_3_dot"
+            android:textAlignment="center"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar
         android:id="@+id/idLoadingPB"
@@ -114,8 +115,12 @@
             android:id="@+id/ContactMassegeRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:scrollbarSize="4dp"
+            android:scrollbarThumbVertical="@color/blue"
+            android:scrollbars="vertical"
             app:layout_constraintBottom_toTopOf="@+id/CMDVConstraintLayout1"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/CDMVNewUserConstraintLayout" />
 
@@ -124,22 +129,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/ContactMassegeRecyclerView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/ContactMassegeRecyclerView"
             tools:visibility="visible">
 
             <Button
                 android:id="@+id/button4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="add user"
                 android:onClick="addNewUserIntoContact"
+                android:text="add user"
                 android:textColor="@color/white"
                 android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/CMDVConstraintLayout1"
             android:layout_width="0dp"
@@ -156,7 +162,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/shapes_massege_write_box_main_bg"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/CMDVConstraintLayout3"
+                app:layout_constraintEnd_toStartOf="@+id/sendMassegeButtonLayout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -165,28 +171,28 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="5dp"
-                    android:textColor="@color/white"
+                    android:autofillHints="name"
                     android:background="@android:color/transparent"
                     android:hint="@string/CMDVMassegeInputHint"
                     android:inputType="text"
-                    android:autofillHints="name"
                     android:paddingStart="15dp"
                     android:paddingEnd="5dp"
+                    android:textColor="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/OtherActivityButton"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="TouchTargetSizeCheck"
-                    tools:text="write massege hint tool"/>
+                    tools:text="write massege hint tool" />
 
 
                 <ImageButton
                     android:id="@+id/OtherActivityButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
                     android:contentDescription="@string/CMDVShareLocation"
                     android:onClick="OtherActivityButtonOnCLick"
-                    android:background="@android:color/transparent"
                     android:padding="10dp"
                     android:src="@drawable/baseline_location_on_24"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -198,7 +204,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/CMDVConstraintLayout3"
+                android:id="@+id/sendMassegeButtonLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@drawable/shapes_massege_send_button_bg"
@@ -209,13 +215,12 @@
 
 
                 <ImageButton
-                    android:id="@+id/send_massege_button"
+                    android:id="@+id/sendMassegeButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:clickable="false"
+                    android:clickable="true"
                     android:contentDescription="@string/CMDVSendMassegeDescription"
-                    android:onClick="SendMassege"
                     android:padding="10dp"
                     android:src="@drawable/ic_massege_send_button_icon"
                     app:layout_constraintBottom_toBottomOf="parent"

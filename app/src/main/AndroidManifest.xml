@@ -62,7 +62,7 @@
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".FunctionalityClasses.ContactDetailsFromMassegeViewPage"
+            android:name=".functionalityClasses.ContactDetailsFromMassegeViewPage"
             android:exported="false" />
         <activity
             android:name=".profile.SettingsOptionPage"
@@ -78,6 +78,9 @@
             android:exported="false" />
         <activity
             android:name=".profile.AccountSettingRecoveryEmailPage"
+            android:exported="false" />
+        <activity
+            android:name=".profile.BlockAccountPage"
             android:exported="false" />
 
         <receiver

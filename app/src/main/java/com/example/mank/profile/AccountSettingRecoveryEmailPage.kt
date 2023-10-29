@@ -18,8 +18,7 @@ import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
-import com.example.mank.LocalDatabaseFiles.DAoFiles.UserDao
+import com.example.mank.localDatabaseFiles.daoClasses.UserDao
 import com.example.mank.MainActivity
 import com.example.mank.R
 import com.example.mank.configuration.GlobalVariables.URL_MAIN

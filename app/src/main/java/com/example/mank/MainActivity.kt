@@ -35,27 +35,27 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.mank.DatabaseAdapter.ContactListAdapter
-import com.example.mank.LocalDatabaseFiles.DAoFiles.ContactsDao
-import com.example.mank.LocalDatabaseFiles.DAoFiles.MassegeDao
-import com.example.mank.LocalDatabaseFiles.DAoFiles.UserDao
-import com.example.mank.LocalDatabaseFiles.DataContainerClasses.AppDetailsHolder
-import com.example.mank.LocalDatabaseFiles.DataContainerClasses.ContactListHolder
-import com.example.mank.LocalDatabaseFiles.DataContainerClasses.MassegeHolderForSpecificPurpose
-import com.example.mank.LocalDatabaseFiles.DataContainerClasses.contactDetailsHolderForSync
-import com.example.mank.LocalDatabaseFiles.DataContainerClasses.userIdEntityHolder
-import com.example.mank.LocalDatabaseFiles.MainDatabaseClass
-import com.example.mank.LocalDatabaseFiles.entities.AllContactOfUserEntity
-import com.example.mank.LocalDatabaseFiles.entities.ContactWithMassengerEntity
-import com.example.mank.LocalDatabaseFiles.entities.MassegeEntity
-import com.example.mank.LocalDatabaseFiles.entities.SetupFirstTimeEntity
-import com.example.mank.LoginMenagement.Login
-import com.example.mank.RecyclerViewClassesFolder.RecyclerViewAdapter
-import com.example.mank.TabMainHelper.MainPageFragmentStateAdapter
-import com.example.mank.ThreadPackages.IContactSync
-import com.example.mank.ThreadPackages.MassegePopSoundThread
-import com.example.mank.ThreadPackages.StatusForThread
-import com.example.mank.ThreadPackages.SyncContactDetailsThread
+import com.example.mank.databaseAdapter.ContactListAdapter
+import com.example.mank.localDatabaseFiles.daoClasses.ContactsDao
+import com.example.mank.localDatabaseFiles.daoClasses.MassegeDao
+import com.example.mank.localDatabaseFiles.daoClasses.UserDao
+import com.example.mank.localDatabaseFiles.dataContainerClasses.AppDetailsHolder
+import com.example.mank.localDatabaseFiles.dataContainerClasses.ContactListHolder
+import com.example.mank.localDatabaseFiles.dataContainerClasses.MassegeHolderForSpecificPurpose
+import com.example.mank.localDatabaseFiles.dataContainerClasses.contactDetailsHolderForSync
+import com.example.mank.localDatabaseFiles.dataContainerClasses.userIdEntityHolder
+import com.example.mank.localDatabaseFiles.MainDatabaseClass
+import com.example.mank.localDatabaseFiles.entities.AllContactOfUserEntity
+import com.example.mank.localDatabaseFiles.entities.ContactWithMassengerEntity
+import com.example.mank.localDatabaseFiles.entities.MassegeEntity
+import com.example.mank.localDatabaseFiles.entities.SetupFirstTimeEntity
+import com.example.mank.loginManagement.Login
+import com.example.mank.recyclerViewClassesFolder.RecyclerViewAdapter
+import com.example.mank.mainPageTabLayoutHelpers.MainPageFragmentStateAdapter
+import com.example.mank.threadPackages.IContactSync
+import com.example.mank.threadPackages.MassegePopSoundThread
+import com.example.mank.threadPackages.StatusForThread
+import com.example.mank.threadPackages.SyncContactDetailsThread
 import com.example.mank.cipher.MyCipher
 import com.example.mank.configuration.GlobalVariables
 import com.example.mank.configuration.permissionMain
@@ -434,7 +434,7 @@ class MainActivity : FragmentActivity() {
 						val tmp = JSONObject()
 						tmp.put("_id", e?.CID)
 						tmp.put("Number", e?.MobileNumber)
-						tmp.put("profileImageVersion", e?.profileImageVersion)
+						tmp.put("ProfileImageVersion", e?.profileImageVersion)
 						jsonArray.put(tmp)
 					} catch (ex: Exception) {
 						Log.d("log-ContactListAdapter-Exception", ex.toString())
@@ -650,7 +650,7 @@ class MainActivity : FragmentActivity() {
 					}
 				}
 				val checkContactSavedInDB = Thread {
-					val x = contactsDao?.getContactWith_CID(newMassegeEntity1.senderId, user_login_id)
+					val x = contactsDao?.getContactWithCID(newMassegeEntity1.senderId, user_login_id)
 					if (x == null) {
 						Log.d("log-onMassegeArriveFromServer3", "setPriorityRankThread1")
 						fetchDataFromServerAndSaveIntoDB(newMassegeEntity1.senderId)
@@ -1045,7 +1045,7 @@ class MainActivity : FragmentActivity() {
 						val contactsDao = db?.contactDao()
 						val rank = contactsDao?.getHighestPriorityRank(user_login_id)
 						val newContact = ContactWithMassengerEntity(Number, null, CID, rank?.plus(1) ?: 1)
-						if (contactsDao?.getContactWith_CID(CID, user_login_id) == null) {
+						if (contactsDao?.getContactWithCID(CID, user_login_id) == null) {
 							contactsDao?.SaveContactDetailsInDatabase(newContact)
 							contactsDao?.setPriorityRank(CID, contactsDao.getHighestPriorityRank(user_login_id), user_login_id)
 							Log.d("log-MainActivity", "onResponse: newContact saved into with rank :" + (rank?.plus(1) ?: 1)) // now we have to add contact into recyclerViewAdapter

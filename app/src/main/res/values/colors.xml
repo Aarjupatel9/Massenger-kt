@@ -17,6 +17,7 @@
     <color name="MassegeBoxAlert">#982727</color>
     <color name="ContactMassegeBackground">#1E1E1E</color>
     <color name="UserMassegeBackground">#C0C0C0</color>
+    <color name="MassegeDateLabelBackground">#5489E3</color>
     <color name="UserMassegeBackgroundOld">#276342</color>
     <color name="MassegeBoxWarning">#C5C7CA</color>
     <color name="new_massege_arrive_colour">#347A10</color>

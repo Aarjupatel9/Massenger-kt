@@ -46,7 +46,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
 // Retrofit with Moshi Converter
     implementation "com.squareup.retrofit2:converter-scalars:2.9.0"
-    implementation 'com.google.firebase:firebase-messaging:23.1.2'
+    implementation 'com.google.firebase:firebase-messaging:23.2.1'
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
@@ -55,35 +55,26 @@ dependencies {
     def work_version = "2.8.1"
     implementation "androidx.work:work-runtime-ktx:$work_version"
 
-
     //for room library
     def room_version = '2.5.2'
-
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
-
-//     To use Kotlin annotation processing tool (kapt)
     kapt "androidx.room:room-compiler:$room_version"
-    // To use Kotlin Symbol Processing (KSP)
+//     To use Kotlin annotation processing tool (kapt)
+//      To use Kotlin Symbol Processing (KSP)
 //    ksp "androidx.room:room-compiler:$room_version"
 //
     // optional - RxJava2 support for Room
     implementation "androidx.room:room-rxjava2:$room_version"
-
     // optional - RxJava3 support for Room
     implementation "androidx.room:room-rxjava3:$room_version"
-
     // optional - Guava support for Room, including Optional and ListenableFuture
     implementation "androidx.room:room-guava:$room_version"
-
     // optional - Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
-
     // optional - Paging 3 Integration
     implementation "androidx.room:room-paging:$room_version"
-
     //end of room
-
 
     //socket
     implementation('io.socket:socket.io-client:2.1.0') {
@@ -94,13 +85,12 @@ dependencies {
         exclude group: 'org.json', module: 'json'
     }
 
-
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
 
     implementation 'androidx.activity:activity:1.6.1'
 
-    implementation 'androidx.core:core:1.9.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'

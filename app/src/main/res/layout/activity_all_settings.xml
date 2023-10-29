@@ -80,16 +80,16 @@
                     android:id="@+id/ASUserProfileImage"
                     android:layout_width="100sp"
                     android:layout_height="100sp"
-                    android:layout_marginHorizontal="5sp"
-                    android:padding="5sp"
-                    android:layout_marginVertical="5sp"
                     android:layout_centerInParent="true"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-
+                    android:layout_marginHorizontal="5sp"
+                    android:layout_marginVertical="5sp"
                     android:adjustViewBounds="true"
+
                     android:background="@drawable/shape_profile_image_border"
                     android:cropToPadding="true"
+                    android:padding="5sp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_baseline_person_24"
 
@@ -206,6 +206,25 @@
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="10sp"
                             android:text="Chats"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/blockPageLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5sp"
+                        android:background="@color/dullWhite"
+                        android:orientation="horizontal"
+                        android:padding="10sp"
+                        android:paddingStart="25sp">
+
+                        <TextView
+                            android:id="@+id/ASBlockLabel1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="10sp"
+                            android:text="Blocked Account"
                             android:textSize="18sp" />
                     </LinearLayout>
 
